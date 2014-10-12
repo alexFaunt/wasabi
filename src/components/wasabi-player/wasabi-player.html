@@ -1,0 +1,99 @@
+
+<link rel="import" href="/components/wasabi-card/wasabi-card.html">
+
+
+<polymer-element name="wasabi-player" attributes="playerId focus selected name picture cards owner extraCard" >
+    <template>
+        <style>
+            :host {
+                display: block;
+                position: relative;
+            }
+
+            .picture {
+                padding: 4px;
+                height: 0;
+                box-sizing: border-box;
+            }
+            /* Would prefer to use bg-image, but this will do, also prefer the div to have the right height but fuck it  */
+            .picture img {
+                border-radius: 100%;
+                width: 100%;
+                display: block;
+            }
+
+            wasabi-card, .picture {
+                float: left;
+                width: 20%;
+            }
+            .extra-card {
+                width: 16.66%;
+            }
+        </style>
+
+        <h4>{{name}}</h4>
+        <div class="picture {{extraCard ? 'extra-card' : ''}}">
+            <img src="{{picture}}"/>
+        </div>
+
+        <template if="{{!owner}}" repeat="{{card, i in cards}}">
+            <wasabi-card colour="{{card.colour.className}}" extra-card="{{extraCard}}" index="{{i}}" data-number="{{card.number}}"></wasabi-card>
+        </template>
+
+        <template if="{{owner}}" repeat="{{whocares, i in [0,0,0,0]}}">
+            <wasabi-card extra-card="{{extraCard}}" index="{{i}}" focus="{{focus}}" owner="{{owner}}" on-play="{{playCard}}" on-discard="{{discardCard}}"></wasabi-card>
+        </template>
+
+        <template if="{{owner && extraCard}}">
+            <wasabi-card extra-card="true" index="4" focus="{{focus}}" owner="{{owner}}" on-play="{{playCard}}" on-discard="{{discardCard}}"></wasabi-card>
+        </template>
+
+    </template>
+
+    <script>
+        Polymer('wasabi-player', {
+
+            publish: {
+                playerId: {value: null, reflect: true},
+                focus: {value: false, reflect: true},
+                name: {value: null, reflect: true},
+                picture: {value: null, reflect: true},
+                selected: {value: false, reflect: true},
+                owner: {value: false, reflect: true},
+                cards: {value: null, reflect:true},
+                extraCard: {value: false, reflect:true}
+            },
+
+            ready: function() {
+            },
+
+            playCard: function (e) {
+                e.stopPropagation();
+                var target = e.target;
+                // should be impossible... we'll check server side too, so don't even bother.
+                if (!target.focus) {
+                    return;
+                }
+                this.fire('play', {
+                    playerId: this.playerId,
+                    cardIndex: target.index
+                });
+            },
+
+            discardCard: function (e) {
+                e.stopPropagation();
+                var target = e.target;
+                // should be impossible... we'll check server side too, so don't even bother.
+                if (!target.focus) {
+                    return;
+                }
+                this.fire('discard', {
+                    playerId: this.playerId,
+                    cardIndex: target.index
+                });
+            }
+        });
+    </script>
+</polymer-element>
+
+

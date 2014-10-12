@@ -1,0 +1,98 @@
+/* Base style for site, elements and site wide styles */
+
+/****************************************************
+    Page style
+****************************************************/
+.page-wrapper {
+    background: $page-background-color;
+}
+
+
+/****************************************************
+   Elements
+****************************************************/
+ul {
+	padding: 0;
+	margin: 0;
+	list-style-type: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+
+/****************************************************
+    Sections + articles default box
+****************************************************/
+section, .section {
+    background-color: $white;
+    @include box-shadow(0 1px 4px rgba(0,0,0,0.2)); //TODO vars
+    @include border-radius($standard-border-radius);
+    margin-bottom: 1em;
+    min-width: $column-width;
+    position: relative;
+
+    header, .content {
+        position: relative;
+        z-index: 1;
+    }
+
+    header {
+        border-bottom: 1px solid $off-white;
+    }
+
+    h2 {
+        padding: $section-h2-padding-vertical $section-h2-padding-horizontal;
+    }
+
+    h3 {
+        padding: $section-h3-padding-vertical $section-h3-padding-horizontal;
+    }
+
+    .content {
+         padding: $section-padding-top $section-padding-right $section-padding-bottom $section-padding-left;
+    }
+
+    .date {
+        position: absolute;
+        top: $section-padding-top;
+        right: $section-padding-right;
+        color: $light-grey;
+        text-transform: lowercase;
+    }
+
+    .background-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        opacity: 0.2;
+        @include filter(blur(3px));
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+        z-index: 0;
+    }
+}
+
+
+/****************************************************
+    Lists
+****************************************************/
+.definition-list {
+    .row > *{
+        padding-bottom: $definition-list-row-spacing;
+    }
+    .row:last-child > * {
+        padding-bottom: 0;
+    }
+}
+
+
+
+
+
+
+

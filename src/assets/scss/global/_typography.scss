@@ -1,0 +1,35 @@
+@mixin customFont() {
+    font-family: 'Play', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, p, a, li, span {
+	padding: 0;
+	margin: 0;
+    line-height: $standard-line-height;
+}
+
+h1, h2, h3, h4, h5, h6, p, li {
+  	color: $standard-text-color;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    @include customFont();
+    font-weight: normal;
+}
+
+h1 {
+	font-size: $h1-font-size;
+	text-align: center;
+}
+
+h2 {
+	font-size: $h2-font-size;
+}
+
+h3 {
+	font-size: $h3-font-size;
+}
+
+h4 {
+	font-size: $h4-font-size;
+}

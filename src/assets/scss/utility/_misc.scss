@@ -1,0 +1,66 @@
+.clearfix:after {
+  content: " ";
+  /* Older browser do not support empty content */
+  visibility: hidden;
+  display: block;
+  height: 0;
+  clear: both;
+}
+
+.hidden {
+	display: none ;
+}
+
+.hide-text {
+	text-indent: -5000px;
+	overflow: hidden;
+}
+
+
+.light-hover {
+    position: relative;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        background: $white;
+        @include transition(opacity $link-hover-transition-time ease-in-out);
+    }
+
+    &:hover {
+
+        &::after {
+            opacity: 0.1;
+            @include transition(opacity $link-hover-transition-time ease-in-out $link-hover-delay-time);
+        }
+    }
+}
+
+.dark-hover {
+    position: relative;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        background: $dark-grey;
+        @include transition(opacity $link-hover-transition-time ease-in-out);
+    }
+
+    &:hover {
+
+        &::after {
+            opacity: 0.2;
+            @include transition(opacity $link-hover-transition-time ease-in-out $link-hover-delay-time);
+        }
+    }
+}

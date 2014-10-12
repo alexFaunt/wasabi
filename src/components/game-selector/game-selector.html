@@ -1,0 +1,53 @@
+<link rel="import" href="/bower-components/paper-button/paper-button.html">
+
+<polymer-element name="game-selector" attributes="" >
+    <template>
+        <style>
+            :host {
+                display: block;
+                height: 100vh;
+                width: 100vw;
+                background: bisque;
+            }
+        </style>
+
+        <paper-button raisedButton role="button" on-down="{{newGame}}" label="Make a new game?"></paper-button>
+
+        <template if="{{yourGames.length > 0 }}">
+            <h2>Your games</h2>
+            <ul>
+                <template repeat="{{game in yourGames}}">
+                    <li data-id="{{game.id}}" on-down="{{joinGame}}">{{game.id}}: {{game.state}}</li>
+                </template>
+            </ul>
+        </template>
+
+        <template if="{{joinableGames.length > 0}}">
+            <h2>Joinable games</h2>
+            <ul>
+                <template repeat="{{game in joinableGames}}">
+                    <li data-id="{{game.id}}" on-down="{{joinGame}}">{{game.id}}: {{game.state}}</li>
+                </template>
+            </ul>
+        </template>
+    </template>
+
+    <script>
+        Polymer('game-selector', {
+            ready: function() {
+                this.yourGames = [];
+                this.joinableGames = [];
+
+                this.newGame = function () {
+                    this.fire('new-game');
+                };
+
+                this.joinGame = function (e) {
+                    this.fire('select-game', e.target.dataset.id);
+                }
+            }
+        });
+
+
+    </script>
+</polymer-element>

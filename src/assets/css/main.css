@@ -1,0 +1,825 @@
+/* normalize.css v2.0.1 | MIT License | git.io/normalize */
+/* ==========================================================================
+   HTML5 display definitions
+   ========================================================================== */
+/*
+ * Corrects `block` display not defined in IE 8/9.
+ */
+/* line 21, ../scss/utility/_normalize.scss */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+nav,
+section,
+summary {
+  display: block;
+}
+
+/*
+ * Corrects `inline-block` display not defined in IE 8/9.
+ */
+/* line 31, ../scss/utility/_normalize.scss */
+audio,
+canvas,
+video {
+  display: inline-block;
+}
+
+/*
+ * Prevents modern browsers from displaying `audio` without controls.
+ * Remove excess height in iOS 5 devices.
+ */
+/* line 40, ../scss/utility/_normalize.scss */
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+
+/*
+ * Addresses styling for `hidden` attribute not present in IE 8/9.
+ */
+/* line 49, ../scss/utility/_normalize.scss */
+[hidden] {
+  display: none;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+/*
+ * 1. Sets default font family to sans-serif.
+ * 2. Prevents iOS text size adjust after orientation change, without disabling
+ *    user zoom.
+ */
+/* line 63, ../scss/utility/_normalize.scss */
+html {
+  font-family: sans-serif;
+  /* 1 */
+  -webkit-text-size-adjust: 100%;
+  /* 2 */
+  -ms-text-size-adjust: 100%;
+  /* 2 */
+}
+
+/*
+ * Removes default margin.
+ */
+/* line 73, ../scss/utility/_normalize.scss */
+body {
+  margin: 0;
+}
+
+/* ==========================================================================
+   Links
+   ========================================================================== */
+/*
+ * Addresses `outline` inconsistency between Chrome and other browsers.
+ */
+/* line 85, ../scss/utility/_normalize.scss */
+a:focus {
+  outline: thin dotted;
+}
+
+/*
+ * Improves readability when focused and also mouse hovered in all browsers.
+ */
+/* line 94, ../scss/utility/_normalize.scss */
+a:active,
+a:hover {
+  outline: 0;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+/*
+ * Addresses `h1` font sizes within `section` and `article` in Firefox 4+,
+ * Safari 5, and Chrome.
+ */
+/* line 107, ../scss/utility/_normalize.scss */
+h1 {
+  font-size: 2em;
+}
+
+/*
+ * Addresses styling not present in IE 8/9, Safari 5, and Chrome.
+ * EDITED - Do not want border
+ */
+/* line 115, ../scss/utility/_normalize.scss */
+abbr {
+  border-bottom: none;
+}
+
+/*
+ * Addresses style set to `bolder` in Firefox 4+, Safari 5, and Chrome.
+ */
+/* line 125, ../scss/utility/_normalize.scss */
+b,
+strong {
+  font-weight: bold;
+}
+
+/*
+ * Addresses styling not present in Safari 5 and Chrome.
+ */
+/* line 133, ../scss/utility/_normalize.scss */
+dfn {
+  font-style: italic;
+}
+
+/*
+ * Addresses styling not present in IE 8/9.
+ */
+/* line 141, ../scss/utility/_normalize.scss */
+mark {
+  background: #ff0;
+  color: #000;
+}
+
+/*
+ * Corrects font family set oddly in Safari 5 and Chrome.
+ */
+/* line 154, ../scss/utility/_normalize.scss */
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, serif;
+  font-size: 1em;
+}
+
+/*
+ * Improves readability of pre-formatted text in all browsers.
+ */
+/* line 163, ../scss/utility/_normalize.scss */
+pre {
+  white-space: pre;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/*
+ * Sets consistent quote types.
+ */
+/* line 173, ../scss/utility/_normalize.scss */
+q {
+  quotes: "\201C" "\201D" "\2018" "\2019";
+}
+
+/*
+ * Addresses inconsistent and variable font size in all browsers.
+ */
+/* line 181, ../scss/utility/_normalize.scss */
+small {
+  font-size: 80%;
+}
+
+/*
+ * Prevents `sub` and `sup` affecting `line-height` in all browsers.
+ */
+/* line 190, ../scss/utility/_normalize.scss */
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+/* line 197, ../scss/utility/_normalize.scss */
+sup {
+  top: -0.5em;
+}
+
+/* line 201, ../scss/utility/_normalize.scss */
+sub {
+  bottom: -0.25em;
+}
+
+/* ==========================================================================
+   Embedded content
+   ========================================================================== */
+/*
+ * Removes border when inside `a` element in IE 8/9.
+ */
+/* line 213, ../scss/utility/_normalize.scss */
+img {
+  border: 0;
+}
+
+/*
+ * Corrects overflow displayed oddly in IE 9.
+ */
+/* line 221, ../scss/utility/_normalize.scss */
+svg:not(:root) {
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Figures
+   ========================================================================== */
+/*
+ * Addresses margin not present in IE 8/9 and Safari 5.
+ */
+/* line 233, ../scss/utility/_normalize.scss */
+figure {
+  margin: 0;
+}
+
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+/*
+ * Define consistent border, margin, and padding.
+ */
+/* line 245, ../scss/utility/_normalize.scss */
+fieldset {
+  border: 1px solid #c0c0c0;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+
+/*
+ * 1. Corrects color not being inherited in IE 8/9.
+ * 2. Remove padding so people aren't caught out if they zero out fieldsets.
+ */
+/* line 256, ../scss/utility/_normalize.scss */
+legend {
+  border: 0;
+  /* 1 */
+  padding: 0;
+  /* 2 */
+}
+
+/*
+ * 1. Corrects font family not being inherited in all browsers.
+ * 2. Corrects font size not being inherited in all browsers.
+ * 3. Addresses margins set differently in Firefox 4+, Safari 5, and Chrome
+ */
+/* line 270, ../scss/utility/_normalize.scss */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  /* 1 */
+  font-size: 100%;
+  /* 2 */
+  margin: 0;
+  /* 3 */
+}
+
+/*
+ * Addresses Firefox 4+ setting `line-height` on `input` using `!important` in
+ * the UA stylesheet.
+ */
+/* line 282, ../scss/utility/_normalize.scss */
+button,
+input {
+  line-height: normal;
+}
+
+/*
+ * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+ *    and `video` controls.
+ * 2. Corrects inability to style clickable `input` types in iOS.
+ * 3. Improves usability and consistency of cursor style between image-type
+ *    `input` and others.
+ */
+/* line 297, ../scss/utility/_normalize.scss */
+button,
+html input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button;
+  /* 2 */
+  cursor: pointer;
+  /* 3 */
+}
+
+/*
+ * Re-set default cursor for disabled elements.
+ */
+/* line 307, ../scss/utility/_normalize.scss */
+button[disabled],
+input[disabled] {
+  cursor: default;
+}
+
+/*
+ * 1. Addresses box sizing set to `content-box` in IE 8/9.
+ * 2. Removes excess padding in IE 8/9.
+ */
+/* line 317, ../scss/utility/_normalize.scss */
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box;
+  /* 1 */
+  padding: 0;
+  /* 2 */
+}
+
+/*
+ * 1. Addresses `appearance` set to `searchfield` in Safari 5 and Chrome.
+ * 2. Addresses `box-sizing` set to `border-box` in Safari 5 and Chrome
+ *    (include `-moz` to future-proof).
+ */
+/* line 328, ../scss/utility/_normalize.scss */
+input[type="search"] {
+  -webkit-appearance: textfield;
+  /* 1 */
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  /* 2 */
+  box-sizing: content-box;
+}
+
+/*
+ * Removes inner padding and search cancel button in Safari 5 and Chrome
+ * on OS X.
+ */
+/* line 341, ../scss/utility/_normalize.scss */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/*
+ * Removes inner padding and border in Firefox 4+.
+ */
+/* line 350, ../scss/utility/_normalize.scss */
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+/*
+ * 1. Removes default vertical scrollbar in IE 8/9.
+ * 2. Improves readability and alignment in all browsers.
+ */
+/* line 360, ../scss/utility/_normalize.scss */
+textarea {
+  overflow: auto;
+  /* 1 */
+  vertical-align: top;
+  /* 2 */
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+/*
+ * Remove most spacing between table cells.
+ */
+/* line 373, ../scss/utility/_normalize.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/***************** Colour Pallette ******************/
+/* Grey scale */
+/* Colours */
+/* global colours */
+/***************** Layout ***************************/
+/***************** Typography ***********************/
+/**************** Backgrounds ***************************/
+/**************** Global ****************************/
+/* Section & article */
+/* Buttons */
+/* definition-list */
+/* forms */
+/**************** Modules ***************************/
+/* Page Header */
+/* Main Menu */
+/* Context Menu */
+/* Game Summary */
+/* Game Team */
+/**************** Directives ***************************/
+/* Team headline */
+/* Loader */
+/***************** Icons ****************************/
+/***************** Misc *****************************/
+/* line 1, ../scss/utility/_misc.scss */
+.clearfix:after {
+  content: " ";
+  /* Older browser do not support empty content */
+  visibility: hidden;
+  display: block;
+  height: 0;
+  clear: both;
+}
+
+/* line 10, ../scss/utility/_misc.scss */
+.hidden {
+  display: none;
+}
+
+/* line 14, ../scss/utility/_misc.scss */
+.hide-text {
+  text-indent: -5000px;
+  overflow: hidden;
+}
+
+/* line 20, ../scss/utility/_misc.scss */
+.light-hover {
+  position: relative;
+}
+/* line 23, ../scss/utility/_misc.scss */
+.light-hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  background: white;
+  -webkit-transition: opacity 0.3s ease-in-out;
+  -moz-transition: opacity 0.3s ease-in-out;
+  -o-transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
+}
+/* line 37, ../scss/utility/_misc.scss */
+.light-hover:hover::after {
+  opacity: 0.1;
+  -webkit-transition: opacity 0.3s ease-in-out;
+  -webkit-transition-delay: 0.1s;
+  -moz-transition: opacity 0.3s ease-in-out 0.1s;
+  -o-transition: opacity 0.3s ease-in-out 0.1s;
+  transition: opacity 0.3s ease-in-out 0.1s;
+}
+
+/* line 44, ../scss/utility/_misc.scss */
+.dark-hover {
+  position: relative;
+}
+/* line 47, ../scss/utility/_misc.scss */
+.dark-hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  background: #222222;
+  -webkit-transition: opacity 0.3s ease-in-out;
+  -moz-transition: opacity 0.3s ease-in-out;
+  -o-transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
+}
+/* line 61, ../scss/utility/_misc.scss */
+.dark-hover:hover::after {
+  opacity: 0.2;
+  -webkit-transition: opacity 0.3s ease-in-out;
+  -webkit-transition-delay: 0.1s;
+  -moz-transition: opacity 0.3s ease-in-out 0.1s;
+  -o-transition: opacity 0.3s ease-in-out 0.1s;
+  transition: opacity 0.3s ease-in-out 0.1s;
+}
+
+/* Base style for site, elements and site wide styles */
+/****************************************************
+    Page style
+****************************************************/
+/* line 6, ../scss/global/_base.scss */
+.page-wrapper {
+  background: #222222;
+}
+
+/****************************************************
+   Elements
+****************************************************/
+/* line 14, ../scss/global/_base.scss */
+ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+/* line 20, ../scss/global/_base.scss */
+a {
+  text-decoration: none;
+}
+
+/****************************************************
+    Sections + articles default box
+****************************************************/
+/* line 28, ../scss/global/_base.scss */
+section, .section {
+  background-color: white;
+  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  margin-bottom: 1em;
+  min-width: 16em;
+  position: relative;
+}
+/* line 36, ../scss/global/_base.scss */
+section header, section .content, .section header, .section .content {
+  position: relative;
+  z-index: 1;
+}
+/* line 41, ../scss/global/_base.scss */
+section header, .section header {
+  border-bottom: 1px solid #eeeeee;
+}
+/* line 45, ../scss/global/_base.scss */
+section h2, .section h2 {
+  padding: 0.3em 0.4375em;
+}
+/* line 49, ../scss/global/_base.scss */
+section h3, .section h3 {
+  padding: 0.3em 0.5em;
+}
+/* line 53, ../scss/global/_base.scss */
+section .content, .section .content {
+  padding: 0.65em 0.7em 0.55em 0.7em;
+}
+/* line 57, ../scss/global/_base.scss */
+section .date, .section .date {
+  position: absolute;
+  top: 0.65em;
+  right: 0.7em;
+  color: #bbbbbb;
+  text-transform: lowercase;
+}
+/* line 65, ../scss/global/_base.scss */
+section .background-image, .section .background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  opacity: 0.2;
+  -webkit-filter: blur(3px);
+  -moz-filter: blur(3px);
+  filter: blur(3px);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  z-index: 0;
+}
+
+/****************************************************
+    Lists
+****************************************************/
+/* line 85, ../scss/global/_base.scss */
+.definition-list .row > * {
+  padding-bottom: 0.2em;
+}
+/* line 88, ../scss/global/_base.scss */
+.definition-list .row:last-child > * {
+  padding-bottom: 0;
+}
+
+/* line 5, ../scss/global/_typography.scss */
+h1, h2, h3, h4, h5, h6, p, a, li, span {
+  padding: 0;
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* line 11, ../scss/global/_typography.scss */
+h1, h2, h3, h4, h5, h6, p, li {
+  color: #222222;
+}
+
+/* line 15, ../scss/global/_typography.scss */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Play', sans-serif;
+  font-weight: normal;
+}
+
+/* line 20, ../scss/global/_typography.scss */
+h1 {
+  font-size: 2em;
+  text-align: center;
+}
+
+/* line 25, ../scss/global/_typography.scss */
+h2 {
+  font-size: 1.6em;
+}
+
+/* line 29, ../scss/global/_typography.scss */
+h3 {
+  font-size: 1.4em;
+}
+
+/* line 33, ../scss/global/_typography.scss */
+h4 {
+  font-size: 1.2em;
+}
+
+/* Overall layout */
+/* line 5, ../scss/global/_layout.scss */
+*,
+*:after,
+*::before {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* line 11, ../scss/global/_layout.scss */
+html,
+body,
+.page-wrapper {
+  height: 100vh;
+  width: 100vw;
+}
+
+/* line 16, ../scss/global/_layout.scss */
+.page-wrapper {
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  -o-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* line 23, ../scss/global/_layout.scss */
+.content-wrapper {
+  overflow: hidden;
+  position: relative;
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  -o-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  /* Prevent text resize on orientation change, useful for web-apps */
+  -webkit-text-size-adjust: none;
+  -moz-text-size-adjust: none;
+  -ms-text-size-adjust: none;
+  -o-text-size-adjust: none;
+  text-size-adjust: none;
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  -ms-backface-visibility: hidden;
+  -o-backface-visibility: hidden;
+  backface-visibility: hidden;
+  min-height: 100%;
+}
+
+/* layout classes */
+/* line 41, ../scss/global/_layout.scss */
+.flex-row {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: flex;
+  display: -ms-flexbox;
+}
+/* line 44, ../scss/global/_layout.scss */
+.flex-row .static {
+  -webkit-flex-grow: 0;
+  -moz-flex-grow: 0;
+  flex-grow: 0;
+  -ms-flex-positive: 0;
+}
+/* line 47, ../scss/global/_layout.scss */
+.flex-row .grow {
+  -webkit-flex-grow: 1;
+  -moz-flex-grow: 1;
+  flex-grow: 1;
+  -ms-flex-positive: 1;
+}
+
+/* line 52, ../scss/global/_layout.scss */
+.label-row {
+  position: relative;
+}
+/* line 55, ../scss/global/_layout.scss */
+.label-row .static {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* line 62, ../scss/global/_layout.scss */
+.table-display {
+  display: table;
+}
+/* line 65, ../scss/global/_layout.scss */
+.table-display .row {
+  display: table-row;
+}
+/* line 69, ../scss/global/_layout.scss */
+.table-display .row > * {
+  display: table-cell;
+}
+
+/* line 1, ../scss/global/_icons.scss */
+.svg-arrow, .svg-data, .svg-facebook, .svg-filter, .svg-graph, .svg-home, .svg-info, .svg-instagram, .svg-location, .svg-mail, .svg-menu, .svg-search, .svg-settings, .svg-twitter, .svg-video {
+  background-repeat: no-repeat;
+  background-image: url(svg/icon-sprite.svg);
+}
+
+/* line 6, ../scss/global/_icons.scss */
+.svg-arrow {
+  background-position: 0 0;
+}
+
+/* line 11, ../scss/global/_icons.scss */
+.svg-data {
+  background-position: 0 -512px;
+}
+
+/* line 16, ../scss/global/_icons.scss */
+.svg-facebook {
+  background-position: 0 -624px;
+}
+
+/* line 21, ../scss/global/_icons.scss */
+.svg-filter {
+  background-position: 0 -724px;
+}
+
+/* line 26, ../scss/global/_icons.scss */
+.svg-graph {
+  background-position: 0 -1236px;
+}
+
+/* line 31, ../scss/global/_icons.scss */
+.svg-home {
+  background-position: 0 -1748px;
+}
+
+/* line 36, ../scss/global/_icons.scss */
+.svg-info {
+  background-position: 0 -2260px;
+}
+
+/* line 41, ../scss/global/_icons.scss */
+.svg-instagram {
+  background-position: 0 -2372px;
+}
+
+/* line 46, ../scss/global/_icons.scss */
+.svg-location {
+  background-position: 0 -2398px;
+}
+
+/* line 51, ../scss/global/_icons.scss */
+.svg-mail {
+  background-position: 0 -2498px;
+}
+
+/* line 56, ../scss/global/_icons.scss */
+.svg-menu {
+  background-position: 0 -3010px;
+}
+
+/* line 61, ../scss/global/_icons.scss */
+.svg-search {
+  background-position: 0 -3522px;
+}
+
+/* line 66, ../scss/global/_icons.scss */
+.svg-settings {
+  background-position: 0 -3570px;
+}
+
+/* line 71, ../scss/global/_icons.scss */
+.svg-twitter {
+  background-position: 0 -3634px;
+}
+
+/* line 76, ../scss/global/_icons.scss */
+.svg-video {
+  background-position: 0 -3698px;
+}
+
+/* line 3, ../scss/global/_form.scss */
+.label {
+  font-weight: bold;
+  padding-right: 0.7em;
+}
+
+/* line 1, ../scss/global/_buttons.scss */
+button {
+  padding: 0;
+  border: 0;
+  background: none;
+}

@@ -1,0 +1,171 @@
+<!-- <link rel="import" href="/bower-components/paper-button/paper-button.html"> -->
+
+<polymer-element name="wasabi-card" attributes="index owner focus number colour" >
+    <template>
+        <style>
+            :host {
+                display: block;
+                width: 100px;
+                height: 161px;
+                position: relative;
+            }
+            .card {
+                border-radius: 20px;
+                position: absolute;
+                transform-style: preserve-3d;
+                left: 2px;
+                top: 2px;
+                right: 2px;
+                bottom: 2px;
+            }
+            .card:before {
+                content: attr(data-number);
+                position: absolute;
+                top: 10px;
+                right: 8px;
+                height: 32px;
+                width: 20px;
+                font-size: 32px;
+                line-height: 32px;
+                -webkit-filter: blur(0.7px);
+                opacity: 0.8;
+            }
+            .card:after {
+                content: attr(data-number);
+                position: absolute;
+                bottom: 10px;
+                left: 8px;
+                height: 32px;
+                width: 20px;
+                font-size: 32px;
+                line-height: 32px;
+                -webkit-filter: blur(0.7px);
+                opacity: 0.8;
+            }
+            .logo {
+                transform: rotate(30deg);
+                transform-style: preserve-3d;
+                height: 69%;
+                width: 72%;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                margin-top: -67%;
+                margin-left: -31%;
+            }
+            .logo:before {
+                transform-style: preserve-3d;
+                content: '';
+                position: absolute;
+                display: block;
+                height: 40%;
+                width: 40%;
+                top: 50%;
+                left: 50%;
+                margin-top: -20%;
+                margin-left: -18%;
+                transform: rotateZ(-45deg) rotateY(-32deg) rotateX(35deg);
+                transform-origin: bottom left;
+            }
+            .logo:after {
+                transform-style: preserve-3d;
+                content: '';
+                position: absolute;
+                display: block;
+                height: 40%;
+                width: 40%;
+                top: 50%;
+                right: 50%;
+                margin-top: -20%;
+                margin-right: -18%;
+                transform: rotateZ(45deg) rotateY(32deg) rotateX(35deg);
+                transform-origin: bottom right;
+            }
+            .red-card {
+                color: #ff2244;
+                box-shadow: 0 0 2px 1px #ff2244, inset 0 0 2px 1px #ff2244;
+            }
+            .red-card .logo:before {
+                box-shadow: -4px 4px 2px 1px #ff2244;
+            }
+            .red-card .logo:after {
+                box-shadow: 4px 4px 2px 1px #ff2244;
+            }
+            .blue-card {
+                color: #44ccff;
+                box-shadow: 0 0 2px 1px #44ccff, inset 0 0 2px 1px #44ccff;
+            }
+            .blue-card .logo:before {
+                box-shadow: -4px 4px 2px 1px #44ccff;
+            }
+            .blue-card .logo:after {
+                box-shadow: 4px 4px 2px 1px #44ccff;
+            }
+            .green-card {
+                color: #77ff55;
+                box-shadow: 0 0 2px 1px #77ff55, inset 0 0 2px 1px #77ff55;
+            }
+            .green-card .logo:before {
+                box-shadow: -4px 4px 2px 1px #77ff55;
+            }
+            .green-card .logo:after {
+                box-shadow: 4px 4px 2px 1px #77ff55;
+
+            }
+            .yellow-card {
+                color: #eeee00;
+                box-shadow: 0 0 2px 1px #eeee00, inset 0 0 2px 1px #eeee00;
+            }
+            .yellow-card .logo:before {
+                box-shadow: -4px 4px 2px 1px #eeee00;
+            }
+            .yellow-card .logo:after {
+                box-shadow: 4px 4px 2px 1px #eeee00;
+
+            }
+            .white-card {
+                color: #ffffff;
+                box-shadow: 0 0 2px 1px #ffffff, inset 0 0 2px 1px #ffffff;
+            }
+            .white-card .logo:before {
+                box-shadow: -4px 4px 2px 1px #ffffff;
+            }
+            .white-card .logo:after {
+                box-shadow: 4px 4px 2px 1px #ffffff;
+            }
+        </style>
+
+        <div class="card {{colour ? colour : 'unknown'}}-card" data-number="{{number}}">
+            <div class="logo"></div>
+        </div>
+
+        <template if="{{owner}}">
+
+            <template if="{{focus}}">
+                <paper-button role="button" on-down="{{play}}" label="Play"></paper-button>
+                <paper-button role="button" on-down="{{discard}}" label="Discard"></paper-button>
+            </template>
+        </template>
+
+    </template>
+
+    <script>
+        Polymer('wasabi-card', {
+
+            publish: {
+                owner: {value: false, reflect: true},
+                focus: {value: false, reflect: true},
+                number: {value: null, reflect: true},
+                colour: {value: null, reflect: true}
+            },
+            ready: function() {
+                this.play = function () {
+                    this.fire('play');
+                };
+                this.discard = function () {
+                    this.fire('discard');
+                };
+            }
+        });
+    </script>
+</polymer-element>

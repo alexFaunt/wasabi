@@ -1,0 +1,135 @@
+/***************** Colour Pallette ******************/
+
+    /* Grey scale */
+    $white: #fff;
+    $off-white: #eee;
+    $light-grey: #bbb;
+    $medium-grey: #444;
+    $dark-grey: #222;
+    $black: #000;
+
+    /* Colours */
+    $dark-blue: #1A477A;
+    $medium-blue: #97C4F7;
+    $light-blue: #FAFDFF;
+
+    $bright-red: #AB0D0D;
+    $bright-red-darken: #800B0B;
+
+    /* global colours */
+    $primary-color: $bright-red;
+    $primary-color-darken: $bright-red-darken;
+    $light-off-white-bg: $light-blue;
+
+/***************** Layout ***************************/
+
+    $column-width: 16em; // 18.75em = 300px;
+    $standard-padding: 1em;
+    $standard-spacing: 1em;
+    $main-menu-width: 10em; // TODO - do dynamically? maybe
+    $context-menu-width: $main-menu-width + 2 * $standard-spacing;
+
+    $layout-tiny: $column-width; // too small
+    $layout-small: $column-width + 2 * $standard-spacing; // 1 column
+    $layout-medium: 2 * $column-width + 3 * $standard-spacing; // 2 columns
+    $layout-large: 3 * $column-width + 4 * $standard-spacing; // 3 columns
+    $layout-massive: 4 * $column-width + 5 * $standard-spacing; // 4 columns
+    $layout-super-massive: $layout-massive + $context-menu-width;
+    $layout-super-massive-black-hole: $layout-super-massive + $main-menu-width;
+
+
+/***************** Typography ***********************/
+
+    $standard-line-height: 1.2;
+    $h1-font-size: 2em;
+    $h2-font-size: 1.6em;
+    $h3-font-size: 1.4em;
+    $h4-font-size: 1.2em;
+
+    $standard-text-color: $dark-grey;
+    $inverted-text-color: $white;
+
+
+/**************** Backgrounds ***************************/
+
+    $background-medium-grey: $medium-grey;
+    $page-background-color: $dark-grey;
+
+
+/**************** Global ****************************/
+
+    /* Section & article */
+    $section-padding-top: 0.65em;
+    $section-padding-left: 0.7em;
+    $section-padding-right: $section-padding-left;
+    $section-padding-bottom: 0.55em;
+    $section-h2-padding-vertical: 0.3em;
+    $section-h2-padding-horizontal: 0.4375em;
+    $section-h3-padding-vertical: 0.3em;
+    $section-h3-padding-horizontal: 0.5em;
+
+    /* Buttons */
+    $link-hover-transition-time: 0.3s;
+    $link-hover-delay-time: 0.1s;
+
+    /* definition-list */
+    $definition-list-row-spacing: 0.2em;
+
+    /* forms */
+    $label-spacing: $section-padding-right;
+
+
+/**************** Modules ***************************/
+
+    /* Page Header */
+    $page-header-height: $h1-font-size * $standard-line-height;
+
+	/* Main Menu */
+	$main-menu-transition-time: 0.5s;
+    $main-menu-background-color: $dark-blue;
+    $main-menu-delay-time: 0.1s;
+    $main-menu-underline-width: 45%;
+    $main-menu-underline-width-hover: 80%;
+    $main-menu-font-size: 1.2em;
+
+    /* Context Menu */
+    $context-menu-transition-time: 0.5s;
+    $context-menu-background-color: $medium-blue;
+    $context-menu-font-size: 1.2em;
+
+    /* Game Summary */
+    $game-summary-info-width: 2em;
+
+    /* Game Team */
+    $game-team-score-size: 1.6em;
+    $game-team-score-font-size: 1.4;
+    $game-team-score-font-size-em: 1.4em;
+    $game-team-headline-padding: 0.4em;
+
+
+/**************** Directives ***************************/
+
+    /* Team headline */
+    $team-headline-image-width: $h2-font-size + $section-h2-padding-vertical * 2 + $section-padding-top + $section-padding-bottom + ((1em + $definition-list-row-spacing) * 4); // 4 = number of rows in headline
+    $team-headline-image-height: $team-headline-image-width;
+    $team-headline-min-height: $team-headline-image-height + $section-padding-top * 2;
+
+    /* Loader */
+    $loader-width: 3em;
+    $loader-height: 3em;
+    $loader-inner-width: $loader-width / 10;
+
+
+/***************** Icons ****************************/
+
+    $icon-standard-width: 2em;
+    $icon-standard-height: $icon-standard-width;
+
+
+/***************** Misc *****************************/
+
+    $standard-box-shadow: 1px -4px 14px -6px $black; // TODO SORT THIS OUT.
+    $standard-border-radius: 4px;
+
+
+

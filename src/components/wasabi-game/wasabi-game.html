@@ -1,0 +1,99 @@
+<link rel="import" href="/components/wasabi-player/wasabi-player.html">
+<link rel="import" href="/bower-components/paper-button/paper-button.html">
+
+<polymer-element name="wasabi-game" attributes="">
+    <template>
+        <style>
+            :host {
+                display: block;
+                height: 100vh;
+                width: 100vw;
+                background: lightblue;
+            }
+
+        </style>
+
+        <!-- Start game button -->
+        <template if="{{game.state == 'PENDING'}}">
+            <template if="{{game.players.length < 3}}">
+                Waiting for more players, you need at least 3...
+            </template>
+            <template if="{{game.players.length >= 3}}">
+                <paper-button raisedButton role="button" on-down="{{triggerGameStart}}" label="Start game?"></paper-button>
+            </template>
+        </template>
+
+        <template if="{{game.state == 'PLAYING'}}">
+            <p>Fuses: {{game.fuseTokens}}</p>
+            <p>Info: {{game.infoTokens}}</p>
+            <p>Deck remaining: {{game.deckLeft}}</p>
+        </template>
+
+        <template repeat="{{playerId in game.players}}">
+            <template if="{{playerId != player}}">
+                <wasabi-player
+                    playerId="{{playerId}}"
+                    focus="{{game.players[game.focus] == playerId}}"
+                    cards="{{game.hands[playerId].cards}}"
+                    picture="{{team[playerId].picture}}"
+                    name="{{team[playerId].name}}"
+                    on-down="{{selectPlayer}}"
+                    owner="false"
+                    extraCard="{{game.maxCards > 4}}">
+                </wasabi-player>
+            </template>
+        </template>
+
+
+        <template if="{{game.state == 'PLAYING'}}">
+            <wasabi-player
+                playerId="{{player}}"
+                focus="{{game.players[game.focus] == player}}"
+                cards="{{game.hands[player].cards}}"
+                picture="{{team[player].picture}}"
+                name="{{team[player].name}}"
+                on-down="{{selectPlayer}}"
+                owner="true"
+                extraCard="{{game.maxCards > 4}}"
+                on-play="{{playCard}}"
+                on-discard="{{discardCard}}">
+            </wasabi-player>
+        </template>
+
+    </template>
+
+    <script>
+        Polymer('wasabi-game', {
+            ready: function() {
+
+                this.triggerGameStart = function () {
+                    this.fire('start-game', this.game.id);
+                };
+
+                this.discardCard = function (e) {
+                    this.fire('discard-card', {
+                        cardIndex: e.detail.cardIndex,
+                        playerId: e.detail.playerId,
+                        gameId: this.game.id
+                    });
+                };
+
+                this.playCard = function (e) {
+                    this.fire('play-card', {
+                        cardIndex: e.detail.cardIndex,
+                        playerId: e.detail.playerId,
+                        gameId: this.game.id
+                    });
+                };
+
+                this.selectPlayer = function (e)  {
+                    var players = document.getElementsByTagName('wasabi-player').selected = false;
+                    e.target.selected = true;
+                };
+
+            }
+        });
+
+
+    </script>
+</polymer-element>

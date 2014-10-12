@@ -1,0 +1,80 @@
+%svg {
+	background-repeat: no-repeat;
+	background-image: url(svg/icon-sprite.svg);
+}
+
+.svg-arrow {
+	background-position: 0 0;
+	@extend %svg;
+}
+
+.svg-data {
+	background-position: 0 -512px;
+	@extend %svg;
+}
+
+.svg-facebook {
+	background-position: 0 -624px;
+	@extend %svg;
+}
+
+.svg-filter {
+	background-position: 0 -724px;
+	@extend %svg;
+}
+
+.svg-graph {
+	background-position: 0 -1236px;
+	@extend %svg;
+}
+
+.svg-home {
+	background-position: 0 -1748px;
+	@extend %svg;
+}
+
+.svg-info {
+	background-position: 0 -2260px;
+	@extend %svg;
+}
+
+.svg-instagram {
+	background-position: 0 -2372px;
+	@extend %svg;
+}
+
+.svg-location {
+	background-position: 0 -2398px;
+	@extend %svg;
+}
+
+.svg-mail {
+	background-position: 0 -2498px;
+	@extend %svg;
+}
+
+.svg-menu {
+	background-position: 0 -3010px;
+	@extend %svg;
+}
+
+.svg-search {
+	background-position: 0 -3522px;
+	@extend %svg;
+}
+
+.svg-settings {
+	background-position: 0 -3570px;
+	@extend %svg;
+}
+
+.svg-twitter {
+	background-position: 0 -3634px;
+	@extend %svg;
+}
+
+.svg-video {
+	background-position: 0 -3698px;
+	@extend %svg;
+}
+
