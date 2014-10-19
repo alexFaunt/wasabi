@@ -1,14 +1,13 @@
 <link rel="import" href="/components/wasabi-player/wasabi-player.html">
 <link rel="import" href="/bower-components/paper-button/paper-button.html">
 
-<polymer-element name="wasabi-game" attributes="">
+<polymer-element name="wasabi-game" attributes="game team">
     <template>
         <style>
             :host {
                 display: block;
                 height: 100vh;
                 width: 100vw;
-                background: lightblue;
             }
 
         </style>
@@ -18,7 +17,7 @@
             <template if="{{game.players.length < 3}}">
                 Waiting for more players, you need at least 3...
             </template>
-            <template if="{{game.players.length >= 3}}">
+            <template if="{{game.players.length >= 3 && game.creator == player}}">
                 <paper-button raisedButton role="button" on-down="{{triggerGameStart}}" label="Start game?"></paper-button>
             </template>
         </template>
@@ -27,25 +26,22 @@
             <p>Fuses: {{game.fuseTokens}}</p>
             <p>Info: {{game.infoTokens}}</p>
             <p>Deck remaining: {{game.deckLeft}}</p>
-        </template>
 
-        <template repeat="{{playerId in game.players}}">
-            <template if="{{playerId != player}}">
-                <wasabi-player
-                    playerId="{{playerId}}"
-                    focus="{{game.players[game.focus] == playerId}}"
-                    cards="{{game.hands[playerId].cards}}"
-                    picture="{{team[playerId].picture}}"
-                    name="{{team[playerId].name}}"
-                    on-down="{{selectPlayer}}"
-                    owner="false"
-                    extraCard="{{game.maxCards > 4}}">
-                </wasabi-player>
+            <template repeat="{{playerId in game.players}}">
+                <template if="{{playerId != player}}">
+                    <wasabi-player
+                        playerId="{{playerId}}"
+                        focus="{{game.players[game.focus] == playerId}}"
+                        cards="{{game.hands[playerId].cards}}"
+                        picture="{{team[playerId].picture}}"
+                        name="{{team[playerId].name}}"
+                        on-down="{{selectPlayer}}"
+                        owner="false"
+                        extraCard="{{game.maxCards > 4}}">
+                    </wasabi-player>
+                </template>
             </template>
-        </template>
 
-
-        <template if="{{game.state == 'PLAYING'}}">
             <wasabi-player
                 playerId="{{player}}"
                 focus="{{game.players[game.focus] == player}}"
@@ -58,6 +54,27 @@
                 on-play="{{playCard}}"
                 on-discard="{{discardCard}}">
             </wasabi-player>
+        </template>
+
+        <template if="{{game.state == 'WON'}}">
+            <p>Winner winner chicken dinner.</p>
+        </template>
+
+        <template if="{{game.state == 'LOST'}}">
+            <p>Ah man you lost, I know that feel.</p>
+
+            <template if="{{game.fuseTokens == 0}}">
+                <p>You ran out of fuse Tokens cause you played bad cards. Try not doing that.</p>
+            </template>
+            <template if="{{game.fuseTokens != 0}}">
+                <p>You lost cause you discarded or badly played stuff you need.</p>
+            </template>
+            <template if="{{game.gameEndCard != null}}">
+                <p>Game ending card: </p>
+
+                <wasabi-card colour="{{game.gameEndCard.colour.className}}" number="{{game.gameEndCard.number}}"></wasabi-card>
+
+            </template>
         </template>
 
     </template>

@@ -101,10 +101,14 @@ var displayGameSelect = function (gamesToDisplay) {
 };
 
 var gameUpdate = function (data) {
+    console.log('UPDATE GAME', data)
     if (PLAYING_GAME && CURRENT_CONTENT.game.id === data.game.id) {
         data.game = sanitiseGame(data.game);
         CURRENT_CONTENT.game = data.game;
-        CURRENT_CONTENT.team = data.team;
+        // if we get sent a team update it
+        if (data.team) {
+            CURRENT_CONTENT.team = data.team;
+        }
     }
     else if (!PLAYING_GAME) {
         playGame(data);
@@ -118,6 +122,7 @@ var playCard = function (data) {
 var discardCard = function (data) {
     socket.emit('discard-card', data.detail);
 };
+
 
 // GO
 

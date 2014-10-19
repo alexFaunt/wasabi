@@ -47,8 +47,8 @@ var COLOURS = [
         className: 'yellow'
     },
     {
-        string: 'black',
-        className: 'black'
+        string: 'purple',
+        className: 'purple'
     }
 ];
 
@@ -138,6 +138,8 @@ var Game = function () {
     this.state = GAME_STATES.PENDING;
     this.maxCards = null;
     this.focus = null; // This is the index of the players array whos turn it is.
+    this.creator = null;
+    this.gameEndCard = null;
 
     for (var i = 0; i < COLOURS.length ; i+=1) {
         this.played[COLOURS[i].string] = [];
@@ -147,6 +149,9 @@ var Game = function () {
 
 Game.prototype.addPlayer = function (playerId) {
     if (this.state === GAME_STATES.PENDING) {
+        if (this.players.length === 0) {
+            this.creator = playerId;
+        }
         this.players.push(playerId);
         this.hands[playerId] = new Hand();
         console.log('ADDING GAME '+this.id+'TO PLAYER' + playerId);
@@ -166,6 +171,101 @@ Game.prototype.startGame = function () {
     this.focus = Math.floor(Math.random() * this.players.length);
     this.state = GAME_STATES.PLAYING;
 };
+
+Game.prototype.hasWon = function () {
+    for (var suit in this.played) {
+        if (this.played.hasOwnProperty(suit)) {
+            if(this.played[suit].length < CARDS_PER_SUIT.length) {
+                return false;
+            }
+        }
+    }
+    return true;
+};
+
+Game.prototype.playCard = function (playerId, cardIndex) {
+
+    var card = this.hands[playerId].cards.splice(cardIndex, 1)[0];
+
+    console.log('you tried to play: '+card.number+card.colour.string);
+
+    // BOOM. played a card
+    if (this.played[card.colour.string].length + 1 === card.number) {
+        console.log('Correct.');
+        this.played[card.colour.string].push(card.number);
+
+        // did we win yet?
+        if (this.hasWon()) {
+            console.log('WINNER WINNER CHECHEN DINNAH.');
+            this.state = GAME_STATES.WON;
+        }
+        // no better carry on shit lords.
+        else {
+            this.nextTurn();
+
+            this.giveCard(playerId);
+        }
+    }
+    // LOL LOSE A TOKEN, GOT ANY LEFT?
+    else if (!(--this.fuseTokens)) {
+        console.log('game over');
+        // GAME OVER.
+        this.state = GAME_STATES.LOST;
+    }
+    else {
+        this.discardCard(playerId, null, card);
+    }
+
+};
+
+
+// two ways to invoke, either with player Id + card index, or card
+Game.prototype.discardCard = function (playerId, cardIndex, card) {
+    var discardedCard;
+
+    if (cardIndex !== null) {
+        discardedCard = this.hands[playerId].cards.splice(cardIndex, 1)[0];
+    }
+    else {
+        discardedCard = card;
+    }
+
+    this.discarded[discardedCard.colour.string].push(discardedCard.number);
+
+    var amount = 0;
+    for (var i = 0; i < this.discarded[discardedCard.colour.string].length; i += 1) {
+        amount = this.discarded[discardedCard.colour.string][i] === discardedCard.number ? amount + 1 : amount;
+    }
+    // bad discard - loswer.
+    if (amount === CARDS_PER_SUIT[discardedCard.number - 1]) {
+        console.log('Discarded too many cards - ' + discardedCard.number + ' ' + discardedCard.colour.string + ' x ' + amount);
+        this.gameEndCard = discardedCard;
+        this.state = GAME_STATES.LOST;
+    }
+    // good discard
+    else {
+        // if it was invoked using a card index then it's a legit discard then we get a token
+        if (cardIndex !== null) {
+            // get a tokens
+            this.infoTokens = this.infoTokens < MAX_INFO_TOKENS ? this.infoTokens + 1 : MAX_INFO_TOKENS;
+        }
+
+        // and a new cards
+        this.giveCard(playerId);
+
+        this.nextTurn();
+    }
+
+};
+
+Game.prototype.giveCard = function (playerId) {
+    this.hands[playerId].cards.push(this.deck.drawCard());
+};
+
+Game.prototype.nextTurn = function () {
+    this.focus = this.focus === this.players.length - 1 ? 0 : this.focus + 1;
+    console.log('Next turn player - index:' + this.focus);
+}
 
 
 // usernames which are currently connected to the chat
@@ -195,10 +295,6 @@ io.on('connection', function (socket) {
 
     socket.on('join-game', function (data) {
         joinGame(socket, data);
-    });
-
-    socket.on('take-turn', function (data) {
-        takeTurn(socket, data);
     });
 
     socket.on('play-card', function (data) {
@@ -339,34 +435,32 @@ var joinGame = function (socket, data) {
 
 };
 
-var takeTurn = function (socket, data) {
-
-};
-
 var playCard = function (socket, data) {
-    console.log('Play card ! - player: ' + data.playerId + ' game: ' + data.gameId + ' cardIndex: ' + data.cardIndex) ;
-    var card = GAMES[data.gameId].hands[data.playerId].cards.splice(data.cardIndex, 1)[0];
-    console.log('you tried to play: '+card.number+card.colour.string);
-    // BOOM. played a card
-    if (GAMES[data.gameId].played[card.colour.string].length + 1 === card.number) {
-        console.log('Correct.');
-        GAMES[data.gameId].played[card.colour.string].push(card.number);
-    }
-    // LOL LOSE A TOKEN, GOT ANY LEFT?
-    else if (!(--GAMES[data.gameId].fuseTokens)) {
-        console.log('game over');
-        // GAME OVER.
+    console.log('Play card ! - player: ' + data.playerId + ' game: ' + data.gameId + ' cardIndex: ' + data.cardIndex);
 
-    }
-    else {
-        console.log('just lose a token which you already did, this else block is purely for logging.');
-    }
+    GAMES[data.gameId].playCard(data.playerId, data.cardIndex);
 
+    socket.emit('game-update', {
+        game: GAMES[data.gameId]
+    });
+
+    socket.broadcast.emit('game-update', {
+        game: GAMES[data.gameId]
+    });
 };
 
 var discardCard = function (socket, data) {
-    console.log('Discard card ! - player: ' + data.playerId + ' game: ' + data.gameId + ' cardIndex: ' + data.cardIndex) ;
+    console.log('Discard card ! - player: ' + data.playerId + ' game: ' + data.gameId + ' cardIndex: ' + data.cardIndex);
 
+    GAMES[data.gameId].discardCard(data.playerId, data.cardIndex);
+
+    socket.emit('game-update', {
+        game: GAMES[data.gameId]
+    });
+
+    socket.broadcast.emit('game-update', {
+        game: GAMES[data.gameId]
+    });
 };
 
 

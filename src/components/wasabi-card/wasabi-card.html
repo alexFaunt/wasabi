@@ -50,7 +50,7 @@
                 position: absolute;
                 top: 50%;
                 left: 50%;
-                margin-top: -67%;
+                margin-top: -69%;
                 margin-left: -31%;
             }
             .logo:before {
@@ -85,6 +85,10 @@
                 color: #ff2244;
                 box-shadow: 0 0 2px 1px #ff2244, inset 0 0 2px 1px #ff2244;
             }
+            .red-card .logo {
+                -webkit-filter: blur(0.7px);
+                opacity: 0.8;
+            }
             .red-card .logo:before {
                 box-shadow: -4px 4px 2px 1px #ff2244;
             }
@@ -95,6 +99,10 @@
                 color: #44ccff;
                 box-shadow: 0 0 2px 1px #44ccff, inset 0 0 2px 1px #44ccff;
             }
+            .blue-card .logo {
+                -webkit-filter: blur(0.7px);
+                opacity: 0.8;
+            }
             .blue-card .logo:before {
                 box-shadow: -4px 4px 2px 1px #44ccff;
             }
@@ -104,6 +112,10 @@
             .green-card {
                 color: #77ff55;
                 box-shadow: 0 0 2px 1px #77ff55, inset 0 0 2px 1px #77ff55;
+            }
+            .green-card .logo {
+                -webkit-filter: blur(0.7px);
+                opacity: 0.8;
             }
             .green-card .logo:before {
                 box-shadow: -4px 4px 2px 1px #77ff55;
@@ -116,6 +128,10 @@
                 color: #eeee00;
                 box-shadow: 0 0 2px 1px #eeee00, inset 0 0 2px 1px #eeee00;
             }
+            .yellow-card .logo {
+                -webkit-filter: blur(0.7px);
+                opacity: 0.8;
+            }
             .yellow-card .logo:before {
                 box-shadow: -4px 4px 2px 1px #eeee00;
             }
@@ -123,29 +139,44 @@
                 box-shadow: 4px 4px 2px 1px #eeee00;
 
             }
-            .white-card {
+            .purple-card {
+                color: #bb55dd;
+                box-shadow: 0 0 2px 1px #bb55dd, inset 0 0 2px 1px #bb55dd;
+            }
+            .purple-card .logo {
+                -webkit-filter: blur(0.7px);
+                opacity: 0.8;
+            }
+            .purple-card .logo:before {
+                box-shadow: -4px 4px 2px 1px #bb55dd;
+            }
+            .purple-card .logo:after {
+                box-shadow: 4px 4px 2px 1px #bb55dd;
+            }
+            .unknown-card {
                 color: #ffffff;
                 box-shadow: 0 0 2px 1px #ffffff, inset 0 0 2px 1px #ffffff;
             }
-            .white-card .logo:before {
+            .unknown-card .logo {
+                -webkit-filter: blur(0.7px);
+                opacity: 0.8;
+            }
+            .unknown-card .logo:before {
                 box-shadow: -4px 4px 2px 1px #ffffff;
             }
-            .white-card .logo:after {
+            .unknown-card .logo:after {
                 box-shadow: 4px 4px 2px 1px #ffffff;
             }
         </style>
 
         <div class="card {{colour ? colour : 'unknown'}}-card" data-number="{{number}}">
             <div class="logo"></div>
-        </div>
 
-        <template if="{{owner}}">
-
-            <template if="{{focus}}">
+            <template if="{{owner && focus}}">
                 <paper-button role="button" on-down="{{play}}" label="Play"></paper-button>
                 <paper-button role="button" on-down="{{discard}}" label="Discard"></paper-button>
             </template>
-        </template>
+        </div>
 
     </template>
 

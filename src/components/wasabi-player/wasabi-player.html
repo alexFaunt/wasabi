@@ -22,32 +22,40 @@
                 display: block;
             }
 
-            wasabi-card, .picture {
+            .picture {
                 float: left;
-                width: 20%;
+                width: 100px;
+                margin-right: 20px;
             }
-            .extra-card {
-                width: 16.66%;
+
+            wasabi-card {
+                float: left;
+                margin-right: 20px;
+            }
+
+            .hand {
+                overflow: hidden;
             }
         </style>
 
-        <h4>{{name}}</h4>
+        <h4>{{name}} focus: {{focus}}</h4>
         <div class="picture {{extraCard ? 'extra-card' : ''}}">
             <img src="{{picture}}"/>
         </div>
+        <div class="hand">
+            <template if="{{!owner}}" repeat="{{card, i in cards}}">
+                <wasabi-card colour="{{card.colour.className}}" extra-card="{{extraCard}}" index="{{i}}" number="{{card.number}}"></wasabi-card>
+            </template>
 
-        <template if="{{!owner}}" repeat="{{card, i in cards}}">
-            <wasabi-card colour="{{card.colour.className}}" extra-card="{{extraCard}}" index="{{i}}" data-number="{{card.number}}"></wasabi-card>
-        </template>
+            <template if="{{owner}}" repeat="{{whocares, i in [0,0,0,0]}}">
+                <wasabi-card extra-card="{{extraCard}}" index="{{i}}" focus="{{focus}}" owner="{{owner}}" on-play="{{playCard}}" on-discard="{{discardCard}}"></wasabi-card>
+            </template>
 
-        <template if="{{owner}}" repeat="{{whocares, i in [0,0,0,0]}}">
-            <wasabi-card extra-card="{{extraCard}}" index="{{i}}" focus="{{focus}}" owner="{{owner}}" on-play="{{playCard}}" on-discard="{{discardCard}}"></wasabi-card>
-        </template>
+            <template if="{{owner && extraCard}}">
+                <wasabi-card extra-card="true" index="4" focus="{{focus}}" owner="{{owner}}" on-play="{{playCard}}" on-discard="{{discardCard}}"></wasabi-card>
+            </template>
 
-        <template if="{{owner && extraCard}}">
-            <wasabi-card extra-card="true" index="4" focus="{{focus}}" owner="{{owner}}" on-play="{{playCard}}" on-discard="{{discardCard}}"></wasabi-card>
-        </template>
-
+        </div>
     </template>
 
     <script>
