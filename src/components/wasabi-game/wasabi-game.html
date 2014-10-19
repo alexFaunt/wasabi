@@ -9,6 +9,9 @@
                 height: 100vh;
                 width: 100vw;
             }
+            .end-game-img {
+                width: 100%;
+            }
 
         </style>
 
@@ -26,42 +29,33 @@
             <p>Fuses: {{game.fuseTokens}}</p>
             <p>Info: {{game.infoTokens}}</p>
             <p>Deck remaining: {{game.deckLeft}}</p>
+        </template>
 
+
+        <template if="{{game.state == 'PENDING' || game.state == 'PLAYING'}}">
             <template repeat="{{playerId in game.players}}">
-                <template if="{{playerId != player}}">
-                    <wasabi-player
-                        playerId="{{playerId}}"
-                        focus="{{game.players[game.focus] == playerId}}"
-                        cards="{{game.hands[playerId].cards}}"
-                        picture="{{team[playerId].picture}}"
-                        name="{{team[playerId].name}}"
-                        on-down="{{selectPlayer}}"
-                        owner="false"
-                        extraCard="{{game.maxCards > 4}}">
-                    </wasabi-player>
-                </template>
+                <wasabi-player
+                    playerId="{{playerId}}"
+                    focus="{{game.players[game.focus] == playerId}}"
+                    cards="{{game.hands[playerId].cards}}"
+                    picture="{{team[playerId].picture}}"
+                    name="{{team[playerId].name}}"
+                    on-down="{{selectPlayer}}"
+                    owner="{{playerId == player}}"
+                    extraCard="{{game.maxCards > 4}}"
+                    on-play="{{playCard}}"
+                    on-discard="{{discardCard}}"
+                    state="{{game.state}}">
+                </wasabi-player>
             </template>
-
-            <wasabi-player
-                playerId="{{player}}"
-                focus="{{game.players[game.focus] == player}}"
-                cards="{{game.hands[player].cards}}"
-                picture="{{team[player].picture}}"
-                name="{{team[player].name}}"
-                on-down="{{selectPlayer}}"
-                owner="true"
-                extraCard="{{game.maxCards > 4}}"
-                on-play="{{playCard}}"
-                on-discard="{{discardCard}}">
-            </wasabi-player>
         </template>
 
         <template if="{{game.state == 'WON'}}">
-            <p>Winner winner chicken dinner.</p>
+            <p>Winner winner</p>
+            <img class="end-game-img" src="winner.png"/>
         </template>
 
         <template if="{{game.state == 'LOST'}}">
-            <p>Ah man you lost, I know that feel.</p>
 
             <template if="{{game.fuseTokens == 0}}">
                 <p>You ran out of fuse Tokens cause you played bad cards. Try not doing that.</p>
@@ -73,8 +67,13 @@
                 <p>Game ending card: </p>
 
                 <wasabi-card colour="{{game.gameEndCard.colour.className}}" number="{{game.gameEndCard.number}}"></wasabi-card>
-
             </template>
+            <template if="{{game.lastPlayerTurn != null && game.lastPlayerTurn == game.players[game.focus]}}">
+                <p>You took too much turns. Do it faster</p>
+            </template>
+
+
+            <img class="end-game-img" src="loser.png"/>
         </template>
 
     </template>

@@ -91,7 +91,10 @@ var Deck = function () {
 
 };
 Deck.prototype.drawCard = function () {
-    return this.cards.splice(Math.floor(Math.random() * this.cards.length), 1)[0];
+    if (this.cards.length) {
+        return this.cards.splice(Math.floor(Math.random() * this.cards.length), 1)[0];
+    }
+    return null;
 };
 Deck.prototype.drawCards = function (amount) {
     var cards = [];
@@ -140,6 +143,8 @@ var Game = function () {
     this.focus = null; // This is the index of the players array whos turn it is.
     this.creator = null;
     this.gameEndCard = null;
+    this.playersFinished = [];// The player who drew the last card gets 1 more go.
+    // this.lastCardJustTaken = false;
 
     for (var i = 0; i < COLOURS.length ; i+=1) {
         this.played[COLOURS[i].string] = [];
@@ -259,14 +264,34 @@ Game.prototype.discardCard = function (playerId, cardIndex, card) {
 };
 
 Game.prototype.giveCard = function (playerId) {
-    this.hands[playerId].cards.push(this.deck.drawCard());
+    var card = this.deck.drawCard();
+    if (card !== null) {
+        this.hands[playerId].cards.push(card);
+    }
+
 };
 
 Game.prototype.nextTurn = function () {
-    this.focus = this.focus === this.players.length - 1 ? 0 : this.focus + 1;
-    console.log('Next turn player - index:' + this.focus);
-}
 
+    if (!this.deck.cards.length) {
+        console.log('Nomore cards');
+
+        this.playersFinished.push(this.players[this.focus]);
+
+        // Greater than, because we push the first person in, who is the one who got the last card,
+        // They get another go.
+        if (this.playersFinished.length > this.players.length ) {
+            console.log('Youve all had a go now fuck off');
+            this.state = GAME_STATES.LOST;
+            return;
+        }
+    }
+
+    this.focus = this.focus === this.players.length - 1 ? 0 : this.focus + 1;
+
+    console.log('Next turn player - index:' + this.focus);
+
+}
 
 // usernames which are currently connected to the chat
 var GAMES = {};

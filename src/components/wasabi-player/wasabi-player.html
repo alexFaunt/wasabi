@@ -2,7 +2,7 @@
 <link rel="import" href="/components/wasabi-card/wasabi-card.html">
 
 
-<polymer-element name="wasabi-player" attributes="playerId focus selected name picture cards owner extraCard" >
+<polymer-element name="wasabi-player" attributes="playerId focus selected name picture cards owner extraCard state" >
     <template>
         <style>
             :host {
@@ -47,14 +47,15 @@
                 <wasabi-card colour="{{card.colour.className}}" extra-card="{{extraCard}}" index="{{i}}" number="{{card.number}}"></wasabi-card>
             </template>
 
-            <template if="{{owner}}" repeat="{{whocares, i in [0,0,0,0]}}">
-                <wasabi-card extra-card="{{extraCard}}" index="{{i}}" focus="{{focus}}" owner="{{owner}}" on-play="{{playCard}}" on-discard="{{discardCard}}"></wasabi-card>
-            </template>
+            <template if="{{state == 'PLAYING'}}">
+                <template if="{{owner}}" repeat="{{whocares, i in [0,0,0,0]}}">
+                    <wasabi-card extra-card="{{extraCard}}" index="{{i}}" focus="{{focus}}" owner="{{owner}}" on-play="{{playCard}}" on-discard="{{discardCard}}"></wasabi-card>
+                </template>
 
-            <template if="{{owner && extraCard}}">
-                <wasabi-card extra-card="true" index="4" focus="{{focus}}" owner="{{owner}}" on-play="{{playCard}}" on-discard="{{discardCard}}"></wasabi-card>
+                <template if="{{owner && extraCard}}">
+                    <wasabi-card extra-card="true" index="4" focus="{{focus}}" owner="{{owner}}" on-play="{{playCard}}" on-discard="{{discardCard}}"></wasabi-card>
+                </template>
             </template>
-
         </div>
     </template>
 
@@ -69,7 +70,8 @@
                 selected: {value: false, reflect: true},
                 owner: {value: false, reflect: true},
                 cards: {value: null, reflect:true},
-                extraCard: {value: false, reflect:true}
+                extraCard: {value: false, reflect:true},
+                state: {value: false, reflect:true},
             },
 
             ready: function() {
