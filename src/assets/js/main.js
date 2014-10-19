@@ -45,7 +45,10 @@ var startPendingGame = function (e) {
 var sanitiseGame = function (game) {
     game.deckLeft = game.deck.cards.length;
     delete game.deck; /// HAHA, need to delete this too, these need to go server side, but it's all synced it's annoying. JUST DON'T CHEAT K?
-    delete game.hands[PLAYER.id]; // remove the current players hand - pretty crappy way to stop cheating but it'll do for now
+    for (var i = 0;i < game.hands[PLAYER.id].cards.length; i+=1) {
+        delete game.hands[PLAYER.id].cards[i].colour; // remove the current players hand - pretty crappy way to stop cheating but it'll do for now
+        delete game.hands[PLAYER.id].cards[i].number; // remove the current players hand - pretty crappy way to stop cheating but it'll do for now
+    }
     return game;
 }
 
@@ -63,6 +66,7 @@ var playGame = function (data) {
         gameElement.addEventListener('start-game', startPendingGame);
         gameElement.addEventListener('play-card', playCard);
         gameElement.addEventListener('discard-card', discardCard);
+        gameElement.addEventListener('give-info', giveInformation);
         setContent(gameElement);
         PLAYING_GAME = true;
     });
@@ -123,6 +127,9 @@ var discardCard = function (data) {
     socket.emit('discard-card', data.detail);
 };
 
+var giveInformation = function (data) {
+    socket.emit('give-info', data.detail);
+};
 
 // GO
 

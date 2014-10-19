@@ -31,23 +31,21 @@
             <p>Deck remaining: {{game.deckLeft}}</p>
         </template>
 
-
-        <template if="{{game.state == 'PENDING' || game.state == 'PLAYING'}}">
-            <template repeat="{{playerId in game.players}}">
-                <wasabi-player
-                    playerId="{{playerId}}"
-                    focus="{{game.players[game.focus] == playerId}}"
-                    cards="{{game.hands[playerId].cards}}"
-                    picture="{{team[playerId].picture}}"
-                    name="{{team[playerId].name}}"
-                    on-down="{{selectPlayer}}"
-                    owner="{{playerId == player}}"
-                    extraCard="{{game.maxCards > 4}}"
-                    on-play="{{playCard}}"
-                    on-discard="{{discardCard}}"
-                    state="{{game.state}}">
-                </wasabi-player>
-            </template>
+        <template if="{{game.state == 'PENDING' || game.state == 'PLAYING'}}" repeat="{{playerId in game.players}}">
+            <wasabi-player
+                playerId="{{playerId}}"
+                focus="{{game.players[game.focus] == playerId}}"
+                cards="{{game.hands[playerId].cards}}"
+                picture="{{team[playerId].picture}}"
+                name="{{team[playerId].name}}"
+                owner="{{playerId == player}}"
+                extraCard="{{game.maxCards > 4}}"
+                on-play="{{playCard}}"
+                on-discard="{{discardCard}}"
+                state="{{game.state}}"
+                on-give-info="{{giveInfo}}"
+                canGiveInfo="{{player == game.players[game.focus] && game.infoTokens > 0}}">
+            </wasabi-player>
         </template>
 
         <template if="{{game.state == 'WON'}}">
@@ -76,6 +74,10 @@
             <img class="end-game-img" src="loser.png"/>
         </template>
 
+        <template if="{{game.state != 'PENDING'}}" repeat="{{message in game.messages}}">
+            <p>{{message.dateTime}}: {{message.message}}</p>
+        </template>
+
     </template>
 
     <script>
@@ -102,9 +104,14 @@
                     });
                 };
 
-                this.selectPlayer = function (e)  {
-                    var players = document.getElementsByTagName('wasabi-player').selected = false;
-                    e.target.selected = true;
+                this.giveInfo = function (e) {
+                    e.stopPropagation();
+                    this.fire('give-info', {
+                        playerId: e.detail.playerId,
+                        gameId: this.game.id,
+                        type: e.detail.type,
+                        value: e.detail.value
+                    });
                 };
 
             }

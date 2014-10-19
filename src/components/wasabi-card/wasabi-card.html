@@ -1,6 +1,6 @@
 <!-- <link rel="import" href="/bower-components/paper-button/paper-button.html"> -->
 
-<polymer-element name="wasabi-card" attributes="index owner focus number colour" >
+<polymer-element name="wasabi-card" attributes="index owner focus number colour canGiveInfo info" >
     <template>
         <style>
             :host {
@@ -169,12 +169,16 @@
             }
         </style>
 
-        <div class="card {{colour ? colour : 'unknown'}}-card" data-number="{{number}}">
+        <div class="card {{colour ? colour : (info.colour ? info.colour : 'unknown')}}-card" data-number="{{number ? number : (info.number ? info.number : null)}}">
             <div class="logo"></div>
-
             <template if="{{owner && focus}}">
                 <paper-button role="button" on-down="{{play}}" label="Play"></paper-button>
                 <paper-button role="button" on-down="{{discard}}" label="Discard"></paper-button>
+            </template>
+
+            <template if="{{canGiveInfo}}">
+                <paper-button role="button" on-down="{{infoNumber}}" label="Number"></paper-button>
+                <paper-button role="button" on-down="{{infoColour}}" label="Colour"></paper-button>
             </template>
         </div>
 
@@ -187,7 +191,9 @@
                 owner: {value: false, reflect: true},
                 focus: {value: false, reflect: true},
                 number: {value: null, reflect: true},
-                colour: {value: null, reflect: true}
+                colour: {value: null, reflect: true},
+                info: {value: null, reflect: true},
+                canGiveInfo: {value: null, reflect: true}
             },
             ready: function() {
                 this.play = function () {
@@ -195,6 +201,18 @@
                 };
                 this.discard = function () {
                     this.fire('discard');
+                };
+                this.infoNumber = function () {
+                    this.fire('info', {
+                        type: 'number',
+                        value: this.number
+                    });
+                };
+                this.infoColour = function () {
+                    this.fire('info', {
+                        type: 'colour',
+                        value: this.colour
+                    });
                 };
             }
         });

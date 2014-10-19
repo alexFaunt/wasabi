@@ -59,15 +59,22 @@ var TURN_TYPES = {
 }
 
 //Classes
-var Message = function (dateTime, player, message) {
-    this.dateTime = dateTime;
-    this.player = player;
+var Message = function (message) {
+    this.dateTime = new Date();
     this.message = message;
+};
+
+var Info = function () {
+    this.colour = null;
+    this.number = null;
+    this.notColour = [];
+    this.notNumber = [];
 };
 
 var Card = function (colour, number) {
     this.colour = colour;
     this.number = number;
+    this.info = new Info();
 };
 
 var Deck = function () {
@@ -84,7 +91,7 @@ var Deck = function () {
             // duplicate cards
             for (var j = 0; j < CARDS_PER_SUIT[i-1]; j += 1) {
 
-                this.cards.push({colour: COLOURS[k], number: i});
+                this.cards.push(new Card(COLOURS[k], i));
             }
         }
     }
@@ -112,18 +119,6 @@ var Player = function (id, name, picture) {
     this.online = true;
 };
 
-var Info = function () {
-    this.colour = null;
-    this.number = null;
-    this.notColour = [];
-    this.notNumber = [];
-};
-
-var CardInfo = function (card) {
-    this.card = card;
-    this.info = null;
-};
-
 var Hand = function () {
     this.cards = [];
 };
@@ -144,7 +139,6 @@ var Game = function () {
     this.creator = null;
     this.gameEndCard = null;
     this.playersFinished = [];// The player who drew the last card gets 1 more go.
-    // this.lastCardJustTaken = false;
 
     for (var i = 0; i < COLOURS.length ; i+=1) {
         this.played[COLOURS[i].string] = [];
@@ -194,9 +188,12 @@ Game.prototype.playCard = function (playerId, cardIndex) {
 
     console.log('you tried to play: '+card.number+card.colour.string);
 
+    var success = ' failed to play a '
+
     // BOOM. played a card
     if (this.played[card.colour.string].length + 1 === card.number) {
         console.log('Correct.');
+        success = ' succesfully played a ';
         this.played[card.colour.string].push(card.number);
 
         // did we win yet?
@@ -221,6 +218,8 @@ Game.prototype.playCard = function (playerId, cardIndex) {
         this.discardCard(playerId, null, card);
     }
 
+    this.messages.push(new Message(PLAYERS[playerId].name + success + card.colour.string + ' ' + card.number));
+
 };
 
 
@@ -230,6 +229,7 @@ Game.prototype.discardCard = function (playerId, cardIndex, card) {
 
     if (cardIndex !== null) {
         discardedCard = this.hands[playerId].cards.splice(cardIndex, 1)[0];
+        this.messages.push(new Message(PLAYERS[playerId].name + ' discarded a' + discardedCard.colour.string + ' ' + discardedCard.number));
     }
     else {
         discardedCard = card;
@@ -291,7 +291,36 @@ Game.prototype.nextTurn = function () {
 
     console.log('Next turn player - index:' + this.focus);
 
-}
+};
+
+Game.prototype.giveInfo = function (playerId, type, value) {
+    // Should be impossible... but better check.
+    if (this.infoTokens === 0) {
+        return;
+    }
+    console.log('giving info to ' + PLAYERS[playerId].name + ' tpye: ' + type + ' value: ' + value);
+
+    this.infoTokens -= 1;
+
+    var amount = 0;
+
+    for (var i = 0; i < this.hands[playerId].cards.length; i+=1) {
+        if ((type === 'number' && this.hands[playerId].cards[i][type]) === value ||
+            (type === 'colour' && this.hands[playerId].cards[i][type].string === value)) {
+            this.hands[playerId].cards[i].info[type] = value;
+            amount += 1;
+        }
+        else {
+
+            this.hands[playerId].cards[i].info['not' + type.substring(0,1).toUpperCase() + type.substring(1)].push(value);
+
+            // If the length of not info is the same length as type of thing -1 , then we know what it is, cba to do that though.
+        }
+    }
+
+    this.messages.push(new Message(PLAYERS[playerId].name + ' told ' + PLAYERS[playerId].name + ' that they have ' + amount + ' ' + value + (amount > 1 ? '\'s' : '')));
+    this.nextTurn();
+};
 
 // usernames which are currently connected to the chat
 var GAMES = {};
@@ -329,6 +358,10 @@ io.on('connection', function (socket) {
     socket.on('discard-card', function (data) {
         discardCard(socket, data);
     });
+
+    socket.on('give-info', function (data) {
+        giveInfo(socket, data);
+    });
 });
 
 
@@ -362,7 +395,7 @@ var onPlayerLogin = function (socket, playerProfile) {
 
     // first time player login - set em up
     if (!player) {
-        player = PLAYERS[playerProfile.id] = new Player(playerProfile.id, playerProfile.name, playerProfile.picture);
+        player = PLAYERS[playerProfile.id] = new Player(playerProfile.id, playerProfile.first_name, playerProfile.picture);
     }
 
     // player has logged in before - see if they've got a game and auto connect
@@ -423,9 +456,7 @@ var createGame = function (socket, playerId) {
     });
 };
 
-var startGame = function (socket, gameId) {
-    GAMES[gameId].startGame();
-
+var emitUpdate = function (socket, gameId) {
     socket.emit('game-update', {
         game: GAMES[gameId],
         team: getTeam(gameId)
@@ -435,8 +466,12 @@ var startGame = function (socket, gameId) {
         game: GAMES[gameId],
         team: getTeam(gameId)
     });
+}
 
+var startGame = function (socket, gameId) {
+    GAMES[gameId].startGame();
 
+    emitUpdate(socket, gameId);
 };
 
 var joinGame = function (socket, data) {
@@ -446,18 +481,7 @@ var joinGame = function (socket, data) {
         GAMES[data.gameId].addPlayer(data.playerId);
     }
 
-    var team = getTeam(data.gameId);
-
-    socket.broadcast.emit('game-update', {
-        game: GAMES[data.gameId],
-        team: team
-    });
-
-    socket.emit('play-game', {
-        game: GAMES[data.gameId],
-        team: team
-    });
-
+    emitUpdate(socket, data.gameId);
 };
 
 var playCard = function (socket, data) {
@@ -465,13 +489,7 @@ var playCard = function (socket, data) {
 
     GAMES[data.gameId].playCard(data.playerId, data.cardIndex);
 
-    socket.emit('game-update', {
-        game: GAMES[data.gameId]
-    });
-
-    socket.broadcast.emit('game-update', {
-        game: GAMES[data.gameId]
-    });
+    emitUpdate(socket, data.gameId);
 };
 
 var discardCard = function (socket, data) {
@@ -479,17 +497,14 @@ var discardCard = function (socket, data) {
 
     GAMES[data.gameId].discardCard(data.playerId, data.cardIndex);
 
-    socket.emit('game-update', {
-        game: GAMES[data.gameId]
-    });
-
-    socket.broadcast.emit('game-update', {
-        game: GAMES[data.gameId]
-    });
+    emitUpdate(socket, data.gameId);
 };
 
+var giveInfo = function (socket, data) {
+    GAMES[data.gameId].giveInfo(data.playerId, data.type, data.value);
 
-
+    emitUpdate(socket, data.gameId);
+};
 
 
 
