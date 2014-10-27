@@ -1,0 +1,25 @@
+TODO - ESSENTIAL
+
+Display info on other peoples cards - when you open them up to look only.
+
+host it... including a database solution        days
+
+
+
+TODO - NICE
+
+Throttle button clicks on large card?           30 min
+
+make it so you can't cheat                      4 hour
+
+booting                                         2 hours
+
+Consider showing people the "Not a colour"      1 hour
+
+multiple games at once                          4 hours
+
+indicate who's online                           1 hour
+
+Allow actual chat between players               1 hour
+
+display when it becomes your turn + sort service worker out to push

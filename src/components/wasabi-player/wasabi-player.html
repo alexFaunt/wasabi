@@ -2,49 +2,18 @@
 <link rel="import" href="/components/wasabi-card/wasabi-card.html">
 
 
-<polymer-element name="wasabi-player" attributes="playerId focus selected name picture cards owner extraCard state canGiveInfo" >
+<polymer-element name="wasabi-player" attributes="playerId focus selected name picture cards owner extraCard state canGiveInfo largeCard">
     <template>
-        <style>
-            :host {
-                display: block;
-                position: relative;
-            }
 
-            .picture {
-                padding: 4px;
-                height: 0;
-                box-sizing: border-box;
-            }
-            /* Would prefer to use bg-image, but this will do, also prefer the div to have the right height but fuck it  */
-            .picture img {
-                border-radius: 100%;
-                width: 100%;
-                display: block;
-            }
+        <link rel="stylesheet" href="../../assets/css/main.css"/>
 
-            .picture {
-                float: left;
-                width: 100px;
-                margin-right: 20px;
-            }
-
-            wasabi-card {
-                float: left;
-                margin-right: 20px;
-            }
-
-            .hand {
-                overflow: hidden;
-            }
-        </style>
-
-        <h4>{{name}}</h4>
-        <div class="picture {{extraCard ? 'extra-card' : ''}}">
-            <img src="{{picture}}"/>
-        </div>
-        <div class="hand">
+        <div class="player-contents {{extraCard ? 'extra-card' : ''}} {{focus ? 'current-turn' : ''}}">
+            <div class="player-info">
+                <span class="player-name">{{name}}</span>
+                <img class="player-picture" src="{{picture}}"/>
+            </div>
             <template repeat="{{card, i in cards}}">
-                <wasabi-card colour="{{card.colour.className}}" extra-card="{{extraCard}}" index="{{i}}" number="{{card.number}}" on-info="{{giveInfo}}" owner="{{owner}}" canGiveInfo="{{!owner && canGiveInfo}}" info="{{card.info}}" on-play="{{playCard}}" on-discard="{{discardCard}}" focus="{{focus}}"></wasabi-card>
+                <wasabi-card colour="{{card.colour.className}}" extra-card="{{extraCard}}" index="{{i}}" number="{{card.number}}" on-info="{{giveInfo}}" owner="{{owner}}" canGiveInfo="{{!owner && canGiveInfo}}" info="{{card.info}}" on-play="{{playCard}}" on-discard="{{discardCard}}" focus="{{focus}}" on-go-large="{{goLarge}}" on-go-small="{{goSmall}}" canGoLarge="true"></wasabi-card>
             </template>
         </div>
     </template>
@@ -62,7 +31,8 @@
                 cards: {value: null, reflect:true},
                 extraCard: {value: false, reflect:true},
                 state: {value: false, reflect:true},
-                canGiveInfo: {value: false, reflect:true}
+                canGiveInfo: {value: false, reflect:true},
+                largeCard: {value: false, reflect:true}
             },
 
             ready: function() {
@@ -100,6 +70,29 @@
                     type: e.detail.type,
                     value: e.detail.value
                 });
+            },
+
+            goLarge: function (e) {
+                e.stopPropagation();
+                if (this.largeCard) {
+                    this.largeCard.large = false;
+                }
+                else {
+                    this.fire('go-large');
+                }
+                this.largeCard = e.target;
+            },
+
+            goSmall: function (e) {
+                e.stopPropagation();
+                this.largeCard = null;
+            },
+
+            hideCard: function () {
+                if (this.largeCard) {
+                    this.largeCard.large = false;
+                    this.largeCard = null;
+                }
             }
         });
     </script>

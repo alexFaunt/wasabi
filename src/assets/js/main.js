@@ -50,7 +50,7 @@ var sanitiseGame = function (game) {
         delete game.hands[PLAYER.id].cards[i].number; // remove the current players hand - pretty crappy way to stop cheating but it'll do for now
     }
     return game;
-}
+};
 
 var playGame = function (data) {
     console.log('Found a game that you should be playing, get on with it', data);
@@ -67,6 +67,7 @@ var playGame = function (data) {
         gameElement.addEventListener('play-card', playCard);
         gameElement.addEventListener('discard-card', discardCard);
         gameElement.addEventListener('give-info', giveInformation);
+        gameElement.addEventListener('back-to-select', backToMenu);
         setContent(gameElement);
         PLAYING_GAME = true;
     });
@@ -89,13 +90,34 @@ var setContent = function (ele) {
     CONTENT.appendChild(ele);
 };
 
-var displayGameSelect = function (gamesToDisplay) {
+var backToMenu = function () {
+    PLAYING_GAME = false;
+    socket.emit('update-games');
+};
+
+var displayGameSelect = function (games) {
     console.log('Display a list of games to pick from');
+
+    var gameLists = {
+        yourGames: [],
+        joinableGames: []
+    };
+
+    for (var idx in games) {
+        if (games.hasOwnProperty(idx)) {
+            if (games[idx].players.indexOf(PLAYER.id) > -1) {
+                gameLists.yourGames.push(games[idx]);
+            }
+            else if (games[idx].state === 'PENDING') {
+                gameLists.joinableGames.push(games[idx]);
+            }
+        }
+    }
 
     Polymer.import([MODULES.GAME_SELECTOR], function () {
         var gameSelector = document.createElement('game-selector');
-        gameSelector.yourGames = gamesToDisplay.yourGames;
-        gameSelector.joinableGames = gamesToDisplay.joinableGames;
+        gameSelector.yourGames = gameLists.yourGames;
+        gameSelector.joinableGames = gameLists.joinableGames;
         gameSelector.addEventListener('new-game', startNewGame);
         gameSelector.addEventListener('select-game', playSelectedGame);
         PLAYING_GAME = false;
@@ -105,7 +127,7 @@ var displayGameSelect = function (gamesToDisplay) {
 };
 
 var gameUpdate = function (data) {
-    console.log('UPDATE GAME', data)
+    console.log('UPDATE GAME', data);
     if (PLAYING_GAME && CURRENT_CONTENT.game.id === data.game.id) {
         data.game = sanitiseGame(data.game);
         CURRENT_CONTENT.game = data.game;
@@ -131,6 +153,12 @@ var giveInformation = function (data) {
     socket.emit('give-info', data.detail);
 };
 
+var gameListUpdate = function (data) {
+    if (!PLAYING_GAME) {
+        displayGameSelect(data);
+    }
+};
+
 // GO
 
 hello.init(APP_IDS);
@@ -144,6 +172,8 @@ socket.on('teammate-logout', onTeammateLogout);
 socket.on('play-game', playGame);
 
 socket.on('display-games', displayGameSelect);
+
+socket.on('game-list-update', gameListUpdate);
 
 socket.on('game-update', gameUpdate);
 

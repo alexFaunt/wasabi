@@ -1,33 +1,62 @@
-<link rel="import" href="/bower-components/paper-button/paper-button.html">
 
 <polymer-element name="game-selector" attributes="" >
     <template>
         <style>
             :host {
                 display: block;
-                height: 100vh;
-                width: 100vw;
             }
         </style>
 
-        <paper-button raisedButton role="button" on-down="{{newGame}}" label="Make a new game?"></paper-button>
+        <link rel="stylesheet" href="../../assets/css/main.css"/>
+
+        <button class="white new-button" type="button" on-down="{{newGame}}" >Make a new game?</button>
 
         <template if="{{yourGames.length > 0 }}">
-            <h2>Your games</h2>
-            <ul>
-                <template repeat="{{game in yourGames}}">
-                    <li data-id="{{game.id}}" on-down="{{joinGame}}">{{game.id}}: {{game.state}}</li>
-                </template>
-            </ul>
+            <h3>Your games</h3>
+            <table class="select-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Creator</th>
+                        <th>Player count</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template repeat="{{game in yourGames}}">
+                        <tr data-id="{{game.id}}" on-down="{{joinGame}}">
+                            <td>{{game.id}}</td>
+                            <td>{{game.creatorName}}</td>
+                            <td>{{game.players.length}}</td>
+                            <td>{{game.state}}</td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
         </template>
 
         <template if="{{joinableGames.length > 0}}">
-            <h2>Joinable games</h2>
-            <ul>
-                <template repeat="{{game in joinableGames}}">
-                    <li data-id="{{game.id}}" on-down="{{joinGame}}">{{game.id}}: {{game.state}}</li>
-                </template>
-            </ul>
+            <h3>Joinable games</h3>
+            <table class="select-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Creator</th>
+                        <th>Player count</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template repeat="{{game in joinableGames}}">
+                        <tr data-id="{{game.id}}" on-down="{{joinGame}}">
+                            <td>{{game.id}}</td>
+                            <td>{{game.creatorName}}</td>
+                            <td>{{game.players.length}}</td>
+                            <td>{{game.state}}</td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
         </template>
     </template>
 
@@ -42,7 +71,12 @@
                 };
 
                 this.joinGame = function (e) {
-                    this.fire('select-game', e.target.dataset.id);
+                    if (e.target.dataset.id) {
+                        this.fire('select-game', e.target.dataset.id);
+                    }
+                    else {
+                        this.fire('select-game', e.target.parentElement.dataset.id);
+                    }
                 }
             }
         });

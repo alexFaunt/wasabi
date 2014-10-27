@@ -26,9 +26,6 @@ a {
     Sections + articles default box
 ****************************************************/
 section, .section {
-    background-color: $white;
-    @include box-shadow(0 1px 4px rgba(0,0,0,0.2)); //TODO vars
-    @include border-radius($standard-border-radius);
     margin-bottom: 1em;
     min-width: $column-width;
     position: relative;

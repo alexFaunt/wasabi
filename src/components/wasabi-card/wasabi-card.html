@@ -1,185 +1,24 @@
-<!-- <link rel="import" href="/bower-components/paper-button/paper-button.html"> -->
 
-<polymer-element name="wasabi-card" attributes="index owner focus number colour canGiveInfo info" >
+<polymer-element name="wasabi-card" attributes="index owner focus number colour canGiveInfo info large canGoLarge">
     <template>
-        <style>
-            :host {
-                display: block;
-                width: 100px;
-                height: 161px;
-                position: relative;
-            }
-            .card {
-                border-radius: 20px;
-                position: absolute;
-                transform-style: preserve-3d;
-                left: 2px;
-                top: 2px;
-                right: 2px;
-                bottom: 2px;
-            }
-            .card:before {
-                content: attr(data-number);
-                position: absolute;
-                top: 10px;
-                right: 8px;
-                height: 32px;
-                width: 20px;
-                font-size: 32px;
-                line-height: 32px;
-                -webkit-filter: blur(0.7px);
-                opacity: 0.8;
-            }
-            .card:after {
-                content: attr(data-number);
-                position: absolute;
-                bottom: 10px;
-                left: 8px;
-                height: 32px;
-                width: 20px;
-                font-size: 32px;
-                line-height: 32px;
-                -webkit-filter: blur(0.7px);
-                opacity: 0.8;
-            }
-            .logo {
-                transform: rotate(30deg);
-                transform-style: preserve-3d;
-                height: 69%;
-                width: 72%;
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                margin-top: -69%;
-                margin-left: -31%;
-            }
-            .logo:before {
-                transform-style: preserve-3d;
-                content: '';
-                position: absolute;
-                display: block;
-                height: 40%;
-                width: 40%;
-                top: 50%;
-                left: 50%;
-                margin-top: -20%;
-                margin-left: -18%;
-                transform: rotateZ(-45deg) rotateY(-32deg) rotateX(35deg);
-                transform-origin: bottom left;
-            }
-            .logo:after {
-                transform-style: preserve-3d;
-                content: '';
-                position: absolute;
-                display: block;
-                height: 40%;
-                width: 40%;
-                top: 50%;
-                right: 50%;
-                margin-top: -20%;
-                margin-right: -18%;
-                transform: rotateZ(45deg) rotateY(32deg) rotateX(35deg);
-                transform-origin: bottom right;
-            }
-            .red-card {
-                color: #ff2244;
-                box-shadow: 0 0 2px 1px #ff2244, inset 0 0 2px 1px #ff2244;
-            }
-            .red-card .logo {
-                -webkit-filter: blur(0.7px);
-                opacity: 0.8;
-            }
-            .red-card .logo:before {
-                box-shadow: -4px 4px 2px 1px #ff2244;
-            }
-            .red-card .logo:after {
-                box-shadow: 4px 4px 2px 1px #ff2244;
-            }
-            .blue-card {
-                color: #44ccff;
-                box-shadow: 0 0 2px 1px #44ccff, inset 0 0 2px 1px #44ccff;
-            }
-            .blue-card .logo {
-                -webkit-filter: blur(0.7px);
-                opacity: 0.8;
-            }
-            .blue-card .logo:before {
-                box-shadow: -4px 4px 2px 1px #44ccff;
-            }
-            .blue-card .logo:after {
-                box-shadow: 4px 4px 2px 1px #44ccff;
-            }
-            .green-card {
-                color: #77ff55;
-                box-shadow: 0 0 2px 1px #77ff55, inset 0 0 2px 1px #77ff55;
-            }
-            .green-card .logo {
-                -webkit-filter: blur(0.7px);
-                opacity: 0.8;
-            }
-            .green-card .logo:before {
-                box-shadow: -4px 4px 2px 1px #77ff55;
-            }
-            .green-card .logo:after {
-                box-shadow: 4px 4px 2px 1px #77ff55;
+        <link rel="stylesheet" href="../../assets/css/main.css"/>
 
-            }
-            .yellow-card {
-                color: #eeee00;
-                box-shadow: 0 0 2px 1px #eeee00, inset 0 0 2px 1px #eeee00;
-            }
-            .yellow-card .logo {
-                -webkit-filter: blur(0.7px);
-                opacity: 0.8;
-            }
-            .yellow-card .logo:before {
-                box-shadow: -4px 4px 2px 1px #eeee00;
-            }
-            .yellow-card .logo:after {
-                box-shadow: 4px 4px 2px 1px #eeee00;
-
-            }
-            .purple-card {
-                color: #bb55dd;
-                box-shadow: 0 0 2px 1px #bb55dd, inset 0 0 2px 1px #bb55dd;
-            }
-            .purple-card .logo {
-                -webkit-filter: blur(0.7px);
-                opacity: 0.8;
-            }
-            .purple-card .logo:before {
-                box-shadow: -4px 4px 2px 1px #bb55dd;
-            }
-            .purple-card .logo:after {
-                box-shadow: 4px 4px 2px 1px #bb55dd;
-            }
-            .unknown-card {
-                color: #ffffff;
-                box-shadow: 0 0 2px 1px #ffffff, inset 0 0 2px 1px #ffffff;
-            }
-            .unknown-card .logo {
-                -webkit-filter: blur(0.7px);
-                opacity: 0.8;
-            }
-            .unknown-card .logo:before {
-                box-shadow: -4px 4px 2px 1px #ffffff;
-            }
-            .unknown-card .logo:after {
-                box-shadow: 4px 4px 2px 1px #ffffff;
-            }
-        </style>
-
-        <div class="card {{colour ? colour : (info.colour ? info.colour : 'unknown')}}-card" data-number="{{number ? number : (info.number ? info.number : null)}}">
+        <div class="card {{colour ? colour : (info.colour ? info.colour : 'unknown')}}-card {{large ? 'large-card' : ''}}" data-number="{{number ? number : (info.number ? info.number : null)}}" on-down="{{select}}">
             <div class="logo"></div>
+            <div class="logo small-only"></div>
+
+            <span class="number small-only">{{number ? number : (info.number ? info.number : null)}}</span>
+
             <template if="{{owner && focus}}">
-                <paper-button role="button" on-down="{{play}}" label="Play"></paper-button>
-                <paper-button role="button" on-down="{{discard}}" label="Discard"></paper-button>
+                <button class="top-button" type="button" on-down="{{play}}">Play</button>
+                <button class="bottom-button" type="button" on-down="{{discard}}">Drop</button>
             </template>
 
             <template if="{{canGiveInfo}}">
-                <paper-button role="button" on-down="{{infoNumber}}" label="Number"></paper-button>
-                <paper-button role="button" on-down="{{infoColour}}" label="Colour"></paper-button>
+                <button class="top-button" type="button" on-down="{{infoNumber}}">Num</button>
+                <button class="bottom-button" type="button" on-down="{{infoColour}}">Col</button>
             </template>
+
         </div>
 
     </template>
@@ -193,26 +32,44 @@
                 number: {value: null, reflect: true},
                 colour: {value: null, reflect: true},
                 info: {value: null, reflect: true},
-                canGiveInfo: {value: null, reflect: true}
+                canGiveInfo: {value: null, reflect: true},
+                large: {value: null, reflect: true},
+                canGoLarge: {value: false, reflect: true}
             },
             ready: function() {
-                this.play = function () {
+                this.play = function (e) {
+                    e.stopPropagation();
                     this.fire('play');
                 };
-                this.discard = function () {
+                this.discard = function (e) {
+                    e.stopPropagation();
                     this.fire('discard');
                 };
-                this.infoNumber = function () {
+                this.infoNumber = function (e) {
+                    e.stopPropagation();
                     this.fire('info', {
                         type: 'number',
                         value: this.number
                     });
                 };
-                this.infoColour = function () {
+                this.infoColour = function (e) {
+                    e.stopPropagation();
                     this.fire('info', {
                         type: 'colour',
                         value: this.colour
                     });
+                };
+                this.select = function () {
+                    if (!this.canGoLarge) {
+                        return;
+                    }
+                    this.large = !this.large;
+                    if (this.large) {
+                        this.fire('go-large');
+                    }
+                    else {
+                        this.fire('go-small');
+                    }
                 };
             }
         });

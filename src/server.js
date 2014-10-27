@@ -16,9 +16,13 @@ var GAME_COUNT = 0;
 
 var MAX_INFO_TOKENS = 8;
 
-var MAX_FUSE_TOKENS = 3;
+var MAX_LIFE_POINTS = 3;
 
 var CARDS_PER_SUIT = [3, 2, 2, 2, 1];
+
+var WHITELISTING = false;
+
+var WHITELIST = ['10152475539689601', '267049153493228', '1380998382190394'];
 
 // Enums
 var GAME_STATES = {
@@ -31,22 +35,27 @@ var GAME_STATES = {
 
 var COLOURS = [
     {
+        idx: 0,
         string: 'red',
         className: 'red'
     },
     {
+        idx: 1,
         string: 'blue',
         className: 'blue'
     },
     {
+        idx: 2,
         string: 'green',
         className: 'green'
     },
     {
+        idx: 3,
         string: 'yellow',
         className: 'yellow'
     },
     {
+        idx: 4,
         string: 'purple',
         className: 'purple'
     }
@@ -126,23 +135,23 @@ var Hand = function () {
 var Game = function () {
     this.id = GAME_COUNT++;
     this.deck = new Deck();
-    this.played = {};
-    this.discarded = {};
+    this.played = [];
+    this.discarded = [];
     this.hands = {};
     this.players = [];
     this.infoTokens = MAX_INFO_TOKENS;
-    this.fuseTokens = MAX_FUSE_TOKENS;
+    this.lifePoints = MAX_LIFE_POINTS;
     this.messages = [];
     this.state = GAME_STATES.PENDING;
     this.maxCards = null;
     this.focus = null; // This is the index of the players array whos turn it is.
     this.creator = null;
+    this.creatorName = null;
     this.gameEndCard = null;
     this.playersFinished = [];// The player who drew the last card gets 1 more go.
 
     for (var i = 0; i < COLOURS.length ; i+=1) {
-        this.played[COLOURS[i].string] = [];
-        this.discarded[COLOURS[i].string] = [];
+        this.played[COLOURS[i].idx] = [];
     }
 };
 
@@ -150,6 +159,7 @@ Game.prototype.addPlayer = function (playerId) {
     if (this.state === GAME_STATES.PENDING) {
         if (this.players.length === 0) {
             this.creator = playerId;
+            this.creatorName = PLAYERS[playerId].name;
         }
         this.players.push(playerId);
         this.hands[playerId] = new Hand();
@@ -172,11 +182,9 @@ Game.prototype.startGame = function () {
 };
 
 Game.prototype.hasWon = function () {
-    for (var suit in this.played) {
-        if (this.played.hasOwnProperty(suit)) {
-            if(this.played[suit].length < CARDS_PER_SUIT.length) {
-                return false;
-            }
+    for (var i = 0; i < this.played.length; i += 1) {
+        if(this.played[i].length < CARDS_PER_SUIT.length) {
+            return false;
         }
     }
     return true;
@@ -191,10 +199,10 @@ Game.prototype.playCard = function (playerId, cardIndex) {
     var success = ' failed to play a '
 
     // BOOM. played a card
-    if (this.played[card.colour.string].length + 1 === card.number) {
+    if (this.played[card.colour.idx].length + 1 === card.number) {
         console.log('Correct.');
         success = ' succesfully played a ';
-        this.played[card.colour.string].push(card.number);
+        this.played[card.colour.idx].push(card);
 
         // did we win yet?
         if (this.hasWon()) {
@@ -209,7 +217,7 @@ Game.prototype.playCard = function (playerId, cardIndex) {
         }
     }
     // LOL LOSE A TOKEN, GOT ANY LEFT?
-    else if (!(--this.fuseTokens)) {
+    else if (!(--this.lifePoints)) {
         console.log('game over');
         // GAME OVER.
         this.state = GAME_STATES.LOST;
@@ -218,7 +226,7 @@ Game.prototype.playCard = function (playerId, cardIndex) {
         this.discardCard(playerId, null, card);
     }
 
-    this.messages.push(new Message(PLAYERS[playerId].name + success + card.colour.string + ' ' + card.number));
+    this.messages.unshift(new Message(PLAYERS[playerId].name + success + card.colour.string + ' ' + card.number));
 
 };
 
@@ -229,17 +237,17 @@ Game.prototype.discardCard = function (playerId, cardIndex, card) {
 
     if (cardIndex !== null) {
         discardedCard = this.hands[playerId].cards.splice(cardIndex, 1)[0];
-        this.messages.push(new Message(PLAYERS[playerId].name + ' discarded a' + discardedCard.colour.string + ' ' + discardedCard.number));
     }
     else {
         discardedCard = card;
     }
+    this.messages.unshift(new Message(PLAYERS[playerId].name + ' discarded a ' + discardedCard.colour.string + ' ' + discardedCard.number));
 
-    this.discarded[discardedCard.colour.string].push(discardedCard.number);
+    this.discarded.push(discardedCard);
 
     var amount = 0;
-    for (var i = 0; i < this.discarded[discardedCard.colour.string].length; i += 1) {
-        amount = this.discarded[discardedCard.colour.string][i] === discardedCard.number ? amount + 1 : amount;
+    for (var i = 0; i < this.discarded.length; i += 1) {
+        amount = this.discarded[i].number === discardedCard.number && this.discarded[i].colour.idx === discardedCard.colour.idx ? amount + 1 : amount;
     }
     // bad discard - loswer.
     if (amount === CARDS_PER_SUIT[discardedCard.number - 1]) {
@@ -318,7 +326,7 @@ Game.prototype.giveInfo = function (playerId, type, value) {
         }
     }
 
-    this.messages.push(new Message(PLAYERS[playerId].name + ' told ' + PLAYERS[playerId].name + ' that they have ' + amount + ' ' + value + (amount > 1 ? '\'s' : '')));
+    this.messages.unshift(new Message(PLAYERS[this.players[this.focus]].name + ' told ' + PLAYERS[playerId].name + ' that they have ' + amount + ' ' + value + (amount > 1 ? '\'s' : '')));
     this.nextTurn();
 };
 
@@ -362,6 +370,10 @@ io.on('connection', function (socket) {
     socket.on('give-info', function (data) {
         giveInfo(socket, data);
     });
+
+    socket.on('update-games', function () {
+        updateGames(socket);
+    });
 });
 
 
@@ -387,9 +399,28 @@ var getTeam = function(gameId) {
     return team;
 };
 
+var getOthersGames = function () {
+    var gameLists = [];
+
+    for (var game in GAMES) {
+        if (GAMES.hasOwnProperty(game)) {
+            if (GAMES[game].players.indexOf(player.id) > -1) {
+                gameLists.yourGames.push(GAMES[game]);
+            }
+            else if (GAMES[game].state === GAME_STATES.PENDING) {
+                gameLists.joinableGames.push(GAMES[game]);
+            }
+        }
+    }
+};
+
 var onPlayerLogin = function (socket, playerProfile) {
 
     console.log('Player Login: ' + playerProfile.id);
+
+    if (WHITELISTING && (WHITELIST.indexOf(playerProfile.id) === -1)) {
+        return;
+    }
 
     var player = PLAYERS[playerProfile.id];
 
@@ -398,41 +429,10 @@ var onPlayerLogin = function (socket, playerProfile) {
         player = PLAYERS[playerProfile.id] = new Player(playerProfile.id, playerProfile.first_name, playerProfile.picture);
     }
 
-    // player has logged in before - see if they've got a game and auto connect
-    var activeGame = findActiveGame(player);
-
-    if (activeGame) {
-        socket.emit('play-game', {
-            game: activeGame,
-            team: getTeam(activeGame.id)
-        });
-    }
-    else {
-
-        //player has no active games - dont auto play, just send them a list
-
-        var gameLists = {
-            yourGames: [],
-            joinableGames: []
-        };
-
-        for (var game in GAMES) {
-            if (GAMES.hasOwnProperty(game)) {
-                if (GAMES[game].players.indexOf(player.id) > -1) {
-                    gameLists.yourGames.push(GAMES[game]);
-                }
-                else if (GAMES[game].state === GAME_STATES.PENDING) {
-                    gameLists.joinableGames.push(GAMES[game]);
-                }
-            }
-        }
-
-        socket.emit('display-games', gameLists)
-
-    }
+    socket.emit('display-games', GAMES);
 
     // echo globally (all clients) that a person has connected --- This needs to only be to relevant people lol.. =/
-    socket.broadcast.emit('teammate-login', player.id);
+    // socket.broadcast.emit('teammate-login', player.id);
     return;
 
 };
@@ -454,6 +454,12 @@ var createGame = function (socket, playerId) {
         game: game,
         team: getTeam(game.id)
     });
+
+    socket.broadcast.emit('game-list-update', GAMES);
+};
+
+var updateGames = function (socket) {
+    socket.emit('game-list-update', GAMES);
 };
 
 var emitUpdate = function (socket, gameId) {
