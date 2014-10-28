@@ -22,7 +22,10 @@ var CARDS_PER_SUIT = [3, 2, 2, 2, 1];
 
 var WHITELISTING = false;
 
-var WHITELIST = ['10152475539689601', '267049153493228', '1380998382190394'];
+// me + test accounts
+var WHITELIST = ['10152475539689601', '267049153493228', '1380998382190394'
+    '10152794676263695'
+    ];
 
 // Enums
 var GAME_STATES = {
@@ -488,6 +491,9 @@ var joinGame = function (socket, data) {
     }
 
     emitUpdate(socket, data.gameId);
+
+    socket.broadcast.emit('game-list-update', GAMES);
+
 };
 
 var playCard = function (socket, data) {

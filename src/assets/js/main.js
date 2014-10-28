@@ -14,6 +14,7 @@ var PLAYER;
 var CURRENT_CONTENT;
 var PLAYING_GAME = false;
 var CONTENT = document.getElementById('content');
+var WAITING_FOR_GAME = null;
 
 var socket = io();
 
@@ -74,6 +75,7 @@ var startNewGame = function () {
 };
 
 var playSelectedGame = function (e) {
+    WAITING_FOR_GAME = e.detail;
     socket.emit('join-game', {
         playerId: PLAYER.id,
         gameId: e.detail
@@ -130,8 +132,9 @@ var gameUpdate = function (data) {
             CURRENT_CONTENT.team = data.team;
         }
     }
-    else if (!PLAYING_GAME) {
+    else if (!PLAYING_GAME && WAITING_FOR_GAME === data.game.id) {
         playGame(data);
+        WAITING_FOR_GAME = null;
     }
 };
 
