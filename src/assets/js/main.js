@@ -22,7 +22,6 @@ var onFacebookLogin = function (authLogin) {
 };
 
 var onFacebookProfile = function (profile) {
-    console.log(profile.name, profile.id);
 
     PLAYER = profile;
 
@@ -30,11 +29,9 @@ var onFacebookProfile = function (profile) {
 };
 
 var onTeammateLogin = function (teamMateInfo) {
-    console.log('LOLIN', teamMateInfo);
 };
 
 var onTeammateLogout = function (teamMateInfo) {
-    console.log('LOLOUT', teamMateInfo);
 };
 
 
@@ -46,14 +43,13 @@ var sanitiseGame = function (game) {
     game.deckLeft = game.deck.cards.length;
     delete game.deck; /// HAHA, need to delete this too, these need to go server side, but it's all synced it's annoying. JUST DON'T CHEAT K?
     for (var i = 0;i < game.hands[PLAYER.id].cards.length; i+=1) {
-        delete game.hands[PLAYER.id].cards[i].colour; // remove the current players hand - pretty crappy way to stop cheating but it'll do for now
-        delete game.hands[PLAYER.id].cards[i].number; // remove the current players hand - pretty crappy way to stop cheating but it'll do for now
+        delete game.hands[PLAYER.id].cards[i].colour; //
+        delete game.hands[PLAYER.id].cards[i].number; //
     }
     return game;
 };
 
 var playGame = function (data) {
-    console.log('Found a game that you should be playing, get on with it', data);
 
     Polymer.import([MODULES.GAME], function () {
         var gameElement = document.createElement('wasabi-game');
@@ -96,7 +92,6 @@ var backToMenu = function () {
 };
 
 var displayGameSelect = function (games) {
-    console.log('Display a list of games to pick from');
 
     var gameLists = {
         yourGames: [],
@@ -127,7 +122,6 @@ var displayGameSelect = function (games) {
 };
 
 var gameUpdate = function (data) {
-    console.log('UPDATE GAME', data);
     if (PLAYING_GAME && CURRENT_CONTENT.game.id === data.game.id) {
         data.game = sanitiseGame(data.game);
         CURRENT_CONTENT.game = data.game;
