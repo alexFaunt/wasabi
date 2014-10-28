@@ -132,7 +132,7 @@ var gameUpdate = function (data) {
             CURRENT_CONTENT.team = data.team;
         }
     }
-    else if (!PLAYING_GAME && WAITING_FOR_GAME === data.game.id) {
+    else if (!PLAYING_GAME && WAITING_FOR_GAME == data.game.id) {
         playGame(data);
         WAITING_FOR_GAME = null;
     }
