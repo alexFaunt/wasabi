@@ -416,7 +416,7 @@ var getOthersGames = function () {
 
 var onPlayerLogin = function (socket, playerProfile) {
 
-    console.log('Player Login: ' + playerProfile.id);
+    console.log('Player Login: ' + playerProfile.id + ' ' + playerProfile.first_name);
 
     if (WHITELISTING && (WHITELIST.indexOf(playerProfile.id) === -1)) {
         return;
