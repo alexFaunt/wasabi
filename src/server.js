@@ -534,7 +534,7 @@ app.get('/db', function (request, response) {
                 console.error(err); response.send("Error " + err);
             }
             else {
-                startServer(result.rows);
+                response.send(result.rows);
             }
         });
     });
