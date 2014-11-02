@@ -23,6 +23,7 @@
   "dependencies": {
     "socket.io": "^1.1.0",
     "express": "^4.9.0",
-    "underscore": "^1.7.0"
+    "underscore": "^1.7.0",
+    "pg": "2.x"
   }
 }

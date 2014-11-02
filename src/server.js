@@ -331,52 +331,54 @@ Game.prototype.giveInfo = function (playerId, type, value) {
     this.nextTurn();
 };
 
-// usernames which are currently connected to the chat
-var GAMES = {};
+var startServer = function (data) {
+console.log(data);
+    // usernames which are currently connected to the chat
+    var GAMES = {};
 
-var PLAYERS = {};
+    var PLAYERS = {};
 
-io.on('connection', function (socket) {
+    io.on('connection', function (socket) {
 
-    // when the client emits 'add user', this listens and executes
-    socket.on('player-login', function (playerProfile) {
-        onPlayerLogin(socket, playerProfile);
+        // when the client emits 'add user', this listens and executes
+        socket.on('player-login', function (playerProfile) {
+            onPlayerLogin(socket, playerProfile);
+        });
+
+        // when the user disconnects.. perform this
+        socket.on('player-logout', function (playerId) {
+            onPlayerLogout(socket, playerId);
+        });
+
+        socket.on('create-game', function (playerId) {
+            createGame(socket, playerId);
+        });
+
+        socket.on('start-game', function (gameId) {
+            startGame(socket, gameId);
+        });
+
+        socket.on('join-game', function (data) {
+            joinGame(socket, data);
+        });
+
+        socket.on('play-card', function (data) {
+            playCard(socket, data);
+        });
+
+        socket.on('discard-card', function (data) {
+            discardCard(socket, data);
+        });
+
+        socket.on('give-info', function (data) {
+            giveInfo(socket, data);
+        });
+
+        socket.on('update-games', function () {
+            updateGames(socket);
+        });
     });
-
-    // when the user disconnects.. perform this
-    socket.on('player-logout', function (playerId) {
-        onPlayerLogout(socket, playerId);
-    });
-
-    socket.on('create-game', function (playerId) {
-        createGame(socket, playerId);
-    });
-
-    socket.on('start-game', function (gameId) {
-        startGame(socket, gameId);
-    });
-
-    socket.on('join-game', function (data) {
-        joinGame(socket, data);
-    });
-
-    socket.on('play-card', function (data) {
-        playCard(socket, data);
-    });
-
-    socket.on('discard-card', function (data) {
-        discardCard(socket, data);
-    });
-
-    socket.on('give-info', function (data) {
-        giveInfo(socket, data);
-    });
-
-    socket.on('update-games', function () {
-        updateGames(socket);
-    });
-});
-
+};
 
 var findActiveGame = function (player) {
     for (var i = 0; i < player.games.length; i+=1) {
@@ -516,6 +518,27 @@ var giveInfo = function (socket, data) {
     emitUpdate(socket, data.gameId);
 };
 
+
+var pg = require('pg');
+var conString = process.env.DATABASE_URL;
+// var conString = "postgres://userman:wasabi@localhost/db";
+console.log('get db called', conString);
+app.get('/db', function (request, response) {
+    console.log('pg app.get /db', process.env.DATABASE_URL);
+    pg.connect(conString, function(err, client, done) {
+        console.log('pg connect ');
+        client.query('SELECT * FROM test_table', function(err, result) {
+            console.log('pg client query');
+            done();
+            if (err) {
+                console.error(err); response.send("Error " + err);
+            }
+            else {
+                startServer(result.rows);
+            }
+        });
+    });
+})
 
 
 
