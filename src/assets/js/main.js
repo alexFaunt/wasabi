@@ -157,7 +157,6 @@ var gameListUpdate = function (data) {
 };
 
 // GO
-
 hello.init(APP_IDS);
 
 hello.on('auth.login', onFacebookLogin);

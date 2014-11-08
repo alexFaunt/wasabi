@@ -121,38 +121,58 @@ Deck.prototype.drawCards = function (amount) {
     return cards;
 };
 
-var Player = function (id, name, picture) {
+var Player = function (id, name, picture, games) {
     this.id = id;
     this.name = name;
     this.picture = picture;
-    this.games = [];
-    this.online = true;
+    this.games = games ? games : [];
 };
 
 var Hand = function () {
     this.cards = [];
 };
 
-var Game = function () {
-    this.id = GAME_COUNT++;
-    this.deck = new Deck();
-    this.played = [];
-    this.discarded = [];
-    this.hands = {};
-    this.players = [];
-    this.infoTokens = MAX_INFO_TOKENS;
-    this.lifePoints = MAX_LIFE_POINTS;
-    this.messages = [];
-    this.state = GAME_STATES.PENDING;
-    this.maxCards = null;
-    this.focus = null; // This is the index of the players array whos turn it is.
-    this.creator = null;
-    this.creatorName = null;
-    this.gameEndCard = null;
-    this.playersFinished = [];// The player who drew the last card gets 1 more go.
+var Game = function (existing) {
+    if (existing) {
+        this.id = existing.id;
+        this.deck = existing.deck;
+        this.played = existing.played;
+        this.discarded = existing.discarded;
+        this.hands = existing.hands;
+        this.players = existing.players;
+        this.infoTokens = existing.infoTokens;
+        this.lifePoints = existing.lifePoints;
+        this.messages = existing.messages;
+        this.state = existing.state;
+        this.maxCards = existing.maxCards;
+        this.focus = existing.focus;
+        this.creator = existing.creator;
+        this.creatorName = existing.creatorName;
+        this.gameEndCard = existing.gameEndCard;
+        this.playersFinished = existing.playersFinished;
+        this.played = existing.played;
+    }
+    else {
+        this.id = GAME_COUNT++;
+        this.deck = new Deck();
+        this.played = [];
+        this.discarded = [];
+        this.hands = {};
+        this.players = [];
+        this.infoTokens = MAX_INFO_TOKENS;
+        this.lifePoints = MAX_LIFE_POINTS;
+        this.messages = [];
+        this.state = GAME_STATES.PENDING;
+        this.maxCards = null;
+        this.focus = null; // This is the index of the players array whos turn it is.
+        this.creator = null;
+        this.creatorName = null;
+        this.gameEndCard = null;
+        this.playersFinished = [];// The player who drew the last card gets 1 more go.
 
-    for (var i = 0; i < COLOURS.length ; i+=1) {
-        this.played[COLOURS[i].idx] = [];
+        for (var i = 0; i < COLOURS.length ; i+=1) {
+            this.played[COLOURS[i].idx] = [];
+        }
     }
 };
 
@@ -331,53 +351,26 @@ Game.prototype.giveInfo = function (playerId, type, value) {
     this.nextTurn();
 };
 
-var startServer = function (data) {
-console.log(data);
-    // usernames which are currently connected to the chat
-    var GAMES = {};
+// usernames which are currently connected to the chat
+var GAMES = null;
 
-    var PLAYERS = {};
+var PLAYERS = null;
 
-    io.on('connection', function (socket) {
 
-        // when the client emits 'add user', this listens and executes
-        socket.on('player-login', function (playerProfile) {
-            onPlayerLogin(socket, playerProfile);
-        });
+var setGames = function (rows) {
+    GAMES = {};
+    for (var i = 0; i < rows.length; i += 1) {
+        var game = JSON.parse(rows[i].data);
+        GAMES[game.id] = new Game(game);
+    }
+};
 
-        // when the user disconnects.. perform this
-        socket.on('player-logout', function (playerId) {
-            onPlayerLogout(socket, playerId);
-        });
-
-        socket.on('create-game', function (playerId) {
-            createGame(socket, playerId);
-        });
-
-        socket.on('start-game', function (gameId) {
-            startGame(socket, gameId);
-        });
-
-        socket.on('join-game', function (data) {
-            joinGame(socket, data);
-        });
-
-        socket.on('play-card', function (data) {
-            playCard(socket, data);
-        });
-
-        socket.on('discard-card', function (data) {
-            discardCard(socket, data);
-        });
-
-        socket.on('give-info', function (data) {
-            giveInfo(socket, data);
-        });
-
-        socket.on('update-games', function () {
-            updateGames(socket);
-        });
-    });
+var setPlayers = function (rows) {
+    PLAYERS = {};
+    for (var i = 0; i < rows.length; i += 1) {
+        var player = JSON.parse(rows[i].data);
+        PLAYERS[player.id] = new Player(player.id, player.name, player.picture, player.games);
+    }
 };
 
 var findActiveGame = function (player) {
@@ -441,7 +434,7 @@ var onPlayerLogin = function (socket, playerProfile) {
 };
 
 var onPlayerLogout = function (playerId) {
-    PLAYERS[playerId].online = false;
+    // PLAYERS[playerId].online = false;
     // PLAYERS[playerId].socket = null;
     // find if he was in a game, and make em offline ? shiiit messy
 
@@ -521,24 +514,126 @@ var giveInfo = function (socket, data) {
 
 var pg = require('pg');
 var conString = process.env.DATABASE_URL;
-// var conString = "postgres://userman:wasabi@localhost/db";
-console.log('get db called', conString);
-app.get('/db', function (request, response) {
-    console.log('pg app.get /db', process.env.DATABASE_URL);
-    pg.connect(conString, function(err, client, done) {
-        console.log('pg connect ');
-        client.query('SELECT * FROM test_table', function(err, result) {
-            console.log('pg client query');
-            done();
-            if (err) {
-                console.error(err); response.send("Error " + err);
-            }
-            else {
-                response.send(result.rows);
-            }
+// var conString = "pg://alex:wasabi@localhost:5432/db";
+var client = new pg.Client(conString);
+client.connect();
+
+// client.query('DROP TABLE games');
+// client.query('CREATE TABLE games(data varchar(1000000))');
+// client.query("INSERT INTO games(data) values($1)", [JSON.stringify(new Game())]);
+// client.query("INSERT INTO games(data) values($1)", [JSON.stringify(new Game())]);
+// client.query("INSERT INTO games(data) values($1)", [JSON.stringify(new Game())]);
+
+// client.query('DROP TABLE players');
+// client.query('CREATE TABLE players(data varchar(1000))');
+// client.query("INSERT INTO players(data) values($1)", [JSON.stringify(new Player('1','2','3'))]);
+// client.query("INSERT INTO players(data) values($1)", [JSON.stringify(new Player('1','2','3'))]);
+// client.query("INSERT INTO players(data) values($1)", [JSON.stringify(new Player('1','2','3'))]);
+console.log(JSON.stringify(new Player('1','2','3')).length);
+
+var query = client.query("SELECT * FROM games");
+query.on("row", function (row, result) {
+    result.addRow(row);
+});
+query.on("end", function (result) {
+    // console.log(JSON.stringify(result.rows, null, "    "));
+    setGames(result.rows);
+    startServer();
+});
+
+var query2 = client.query("SELECT * FROM players");
+query2.on("row", function (row, result) {
+    result.addRow(row);
+});
+query2.on("end", function (result) {
+    // console.log(JSON.stringify(result.rows, null, "    "));
+    setPlayers(result.rows);
+    startServer();
+});
+
+
+var startServer = function () {
+
+    if (PLAYERS !== null && GAMES !== null) {
+        return;
+    }
+
+    io.on('connection', function (socket) {
+
+        // when the client emits 'add user', this listens and executes
+        socket.on('player-login', function (playerProfile) {
+            onPlayerLogin(socket, playerProfile);
+        });
+
+        // when the user disconnects.. perform this
+        socket.on('player-logout', function (playerId) {
+            onPlayerLogout(socket, playerId);
+        });
+
+        socket.on('create-game', function (playerId) {
+            createGame(socket, playerId);
+        });
+
+        socket.on('start-game', function (gameId) {
+            startGame(socket, gameId);
+        });
+
+        socket.on('join-game', function (data) {
+            joinGame(socket, data);
+        });
+
+        socket.on('play-card', function (data) {
+            playCard(socket, data);
+        });
+
+        socket.on('discard-card', function (data) {
+            discardCard(socket, data);
+        });
+
+        socket.on('give-info', function (data) {
+            giveInfo(socket, data);
+        });
+
+        socket.on('update-games', function () {
+            updateGames(socket);
         });
     });
-})
+};
+
+var saveData = function () {
+    // This can't be good.
+    client.query('DROP TABLE games');
+    client.query('CREATE TABLE games(data varchar(1000000))');
+
+    for (var game in GAMES) {
+        if (GAMES.hasOwnProperty(game)) {
+            client.query("INSERT INTO games(data) values($1)", [JSON.stringify(game)]);
+        }
+    }
+    // This can't be good.
+    client.query('DROP TABLE players');
+    client.query('CREATE TABLE players(data varchar(10000))');
+
+    for (var player in PLAYERS) {
+        if (PLAYERS.hasOwnProperty(player)) {
+            client.query("INSERT INTO players(data) values($1)", [JSON.stringify(player)]);
+        }
+    }
+
+};
+
+process.on('SIGTERM', function () {
+    server.close();
+
+    saveData();
+
+    process.exit(0);
+});
+
+
+
+
+
 
 
 
