@@ -567,8 +567,9 @@ var startServer = function () {
     if (PLAYERS === null || GAMES === null) {
         return;
     }
+    console.log('PLAYERS DATABASE');
     console.log(PLAYERS);
-    console.log(GAMES);
+    console.log('PLAYERS DATABASE');
 
     io.on('connection', function (socket) {
 
@@ -626,10 +627,10 @@ var saveGames = function (gameId, newEntry) {
 
 var savePlayers = function (playerId, newEntry) {
     if (newEntry) {
-        client.query("INSERT INTO players(id, data) values($1, $2)", [playerId, JSON.stringify(PLAYERS[playerId])]);
+        client.query("INSERT INTO players(id, data) values($1, $2)", [''+playerId, JSON.stringify(PLAYERS[playerId])]);
     }
     else {
-        client.query("UPDATE players SET data = $1 WHERE id IS $2", [JSON.stringify(PLAYERS[playerId]), playerId]);
+        client.query("UPDATE players SET data = $1 WHERE id IS $2", [JSON.stringify(PLAYERS[playerId]), ''+playerId]);
     }
 };
 
