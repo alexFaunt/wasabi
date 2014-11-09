@@ -563,6 +563,8 @@ var startServer = function () {
     if (PLAYERS === null || GAMES === null) {
         return;
     }
+    console.log(PLAYERS);
+    console.log(GAMES);
 
     io.on('connection', function (socket) {
 
