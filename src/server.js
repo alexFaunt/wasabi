@@ -468,6 +468,8 @@ var emitUpdate = function (socket, gameId) {
         game: GAMES[gameId],
         team: getTeam(gameId)
     });
+
+    saveData();
 }
 
 var startGame = function (socket, gameId) {
@@ -554,7 +556,7 @@ query2.on("end", function (result) {
 
 var startServer = function () {
 
-    if (PLAYERS !== null && GAMES !== null) {
+    if (PLAYERS === null || GAMES === null) {
         return;
     }
 
@@ -625,7 +627,7 @@ var saveData = function () {
 process.on('SIGTERM', function () {
     server.close();
 
-    saveData();
+    client.end();
 
     process.exit(0);
 });
