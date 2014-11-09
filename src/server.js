@@ -423,6 +423,10 @@ var onPlayerLogin = function (socket, playerProfile) {
     // first time player login - set em up
     if (!player) {
         player = PLAYERS[playerProfile.id] = new Player(playerProfile.id, playerProfile.first_name, playerProfile.picture);
+        savePlayers(playerProfile.id, true);
+    }
+    else {
+        savePlayers(playerProfile.id);
     }
 
     socket.emit('display-games', GAMES);
@@ -441,7 +445,7 @@ var onPlayerLogout = function (playerId) {
     // echo globally (all clients) that a person has connected
     socket.broadcast.emit('teammate-logout', playerId);
 
-    saveData();
+    savePlayers(playerId);
 };
 
 var createGame = function (socket, playerId) {
@@ -455,7 +459,7 @@ var createGame = function (socket, playerId) {
 
     socket.broadcast.emit('game-list-update', GAMES);
 
-    saveData();
+    saveGames(game.id, true);
 };
 
 var updateGames = function (socket) {
@@ -473,7 +477,7 @@ var emitUpdate = function (socket, gameId) {
         team: getTeam(gameId)
     });
 
-    saveData();
+    saveGames(gameId);
 }
 
 var startGame = function (socket, gameId) {
@@ -608,26 +612,25 @@ var startServer = function () {
     });
 };
 
-var saveData = function () {
-    // This can't be good.
-    client.query('DROP TABLE games');
-    client.query('CREATE TABLE games(data varchar(1000000))');
+var saveGames = function (gameId, newEntry) {
+    gameId = parseInt(gameId, 10);
 
-    for (var game in GAMES) {
-        if (GAMES.hasOwnProperty(game)) {
-            client.query("INSERT INTO games(data) values($1)", [JSON.stringify(game)]);
-        }
+    if (newEntry) {
+        client.query("INSERT INTO games(id, data) values($1, $2)", [gameId, JSON.stringify(GAMES[gameId])]);
     }
-    // This can't be good.
-    client.query('DROP TABLE players');
-    client.query('CREATE TABLE players(data varchar(10000))');
-
-    for (var player in PLAYERS) {
-        if (PLAYERS.hasOwnProperty(player)) {
-            client.query("INSERT INTO players(data) values($1)", [JSON.stringify(player)]);
-        }
+    else {
+        client.query("UPDATE games SET data = $1 WHERE id IS $2", [JSON.stringify(GAMES[gameId]), gameId]);
     }
 
+};
+
+var savePlayers = function (playerId, newEntry) {
+    if (newEntry) {
+        client.query("INSERT INTO players(id, data) values($1, $2)", [playerId, JSON.stringify(PLAYERS[playerId])]);
+    }
+    else {
+        client.query("UPDATE players SET data = $1 WHERE id IS $2", [JSON.stringify(PLAYERS[playerId]), playerId]);
+    }
 };
 
 process.on('SIGTERM', function () {
