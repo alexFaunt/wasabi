@@ -440,6 +440,8 @@ var onPlayerLogout = function (playerId) {
 
     // echo globally (all clients) that a person has connected
     socket.broadcast.emit('teammate-logout', playerId);
+
+    saveData();
 };
 
 var createGame = function (socket, playerId) {
@@ -452,6 +454,8 @@ var createGame = function (socket, playerId) {
     });
 
     socket.broadcast.emit('game-list-update', GAMES);
+
+    saveData();
 };
 
 var updateGames = function (socket) {
