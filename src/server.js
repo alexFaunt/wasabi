@@ -412,8 +412,6 @@ var getOthersGames = function () {
 
 var onPlayerLogin = function (socket, playerProfile) {
 
-    console.log('Player Login: ' + playerProfile.id + ' ' + playerProfile.first_name);
-
     if (WHITELISTING && (WHITELIST.indexOf(playerProfile.id) === -1)) {
         return;
     }
@@ -539,7 +537,6 @@ client.connect();
 // client.query("INSERT INTO players(data) values($1)", [JSON.stringify(new Player('1','2','3'))]);
 // client.query("INSERT INTO players(data) values($1)", [JSON.stringify(new Player('1','2','3'))]);
 // client.query("INSERT INTO players(data) values($1)", [JSON.stringify(new Player('1','2','3'))]);
-console.log(JSON.stringify(new Player('1','2','3')).length);
 
 var query = client.query("SELECT * FROM games");
 query.on("row", function (row, result) {
@@ -615,22 +612,23 @@ var startServer = function () {
 
 var saveGames = function (gameId, newEntry) {
     gameId = parseInt(gameId, 10);
-
+console.log('save games, ', gameId, newEntry);
     if (newEntry) {
         client.query("INSERT INTO games(id, data) values($1, $2)", [gameId, JSON.stringify(GAMES[gameId])]);
     }
     else {
-        client.query("UPDATE games SET data = $1 WHERE id IS $2", [JSON.stringify(GAMES[gameId]), gameId]);
+        client.query("UPDATE games SET data = $1 WHERE id = $2", [JSON.stringify(GAMES[gameId]), gameId]);
     }
 
 };
 
 var savePlayers = function (playerId, newEntry) {
+console.log('save players, ', playerId, newEntry);
     if (newEntry) {
         client.query("INSERT INTO players(id, data) values($1, $2)", [''+playerId, JSON.stringify(PLAYERS[playerId])]);
     }
     else {
-        client.query("UPDATE players SET data = $1 WHERE id IS $2", [JSON.stringify(PLAYERS[playerId]), ''+playerId]);
+        client.query("UPDATE players SET data = $1 WHERE id = $2", [JSON.stringify(PLAYERS[playerId]), ''+playerId]);
     }
 };
 
