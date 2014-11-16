@@ -87,21 +87,30 @@ var Card = function (colour, number) {
     this.info = new Info();
 };
 
-var Deck = function () {
+var Deck = function (existing) {
     this.cards = [];
 
-    // generate deck here LOL IS THIS IS n^3 ?! Whatevs.
+    if (existing) {
+        console.log('regenerating deck');
+        for (var i = 0; i < existing.cards.length; i+=1) {
+            this.cards.push(new Card(existing.cards[i].colour, existing.cards[i].number));
+        }
+        console.log(this.cards);
+    }
+    else {
 
-    // each colour
-    for (var k = 0; k < COLOURS.length; k += 1) {
+        // generate deck here LOL THIS IS n^3 ?! Whatevs.
+        // each colour
+        for (var k = 0; k < COLOURS.length; k += 1) {
 
-        // each number
-        for (var i = 1; i <= CARDS_PER_SUIT.length; i += 1) {
+            // each number
+            for (var i = 1; i <= CARDS_PER_SUIT.length; i += 1) {
 
-            // duplicate cards
-            for (var j = 0; j < CARDS_PER_SUIT[i-1]; j += 1) {
+                // duplicate cards
+                for (var j = 0; j < CARDS_PER_SUIT[i-1]; j += 1) {
 
-                this.cards.push(new Card(COLOURS[k], i));
+                    this.cards.push(new Card(COLOURS[k], i));
+                }
             }
         }
     }
@@ -135,7 +144,7 @@ var Hand = function () {
 var Game = function (existing) {
     if (existing) {
         this.id = existing.id;
-        this.deck = existing.deck;
+        this.deck = new Deck(existing.deck);
         this.played = existing.played;
         this.discarded = existing.discarded;
         this.hands = existing.hands;
