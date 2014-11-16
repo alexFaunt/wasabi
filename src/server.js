@@ -372,6 +372,7 @@ var setGames = function (rows) {
         var game = JSON.parse(rows[i].data);
         GAMES[game.id] = new Game(game);
     }
+    GAME_COUNT = rows.length;
 };
 
 var setPlayers = function (rows) {
